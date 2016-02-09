@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="onload">
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="Career Hunter Recruitment Solutions, Applicant Tracking System">
+	<meta name="author" content="CHRS IT">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHRS | Applicant Tracking System</title>
+ 
+    <!-- start: Css -->
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/bootstrap.min.css">
+
+    <!-- plugins -->
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/simple-line-icons.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/fullcalendar.min.css"/>
+	<link rel="stylesheet" type="text/css" href="./ASSETS/css/style.css">
+
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dialog/ngDialog.min.css" >
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dialog/ngDialog-theme-plain.min.css" >
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dialog/ngDialog-theme-default.min.css" >
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dialog/ngDialog-custom-width.css" >
+
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/notification/angular-ui-notification.min.css" >
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/autocomplete/angucomplete-alt.css" >
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dropdown/isteven-multi-select.css" >
+    <!-- <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/autocomplete/structure.css" > -->
+
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/bootstrap-material-datetimepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/select2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/dropzone.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/style.css" >
+
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/datatables.bootstrap.min.css"/>
+	<!-- end: Css -->
+
+	<link rel="shortcut icon" href="./ASSETS/img/cats_logo.png">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body id="mimin" class="dashboard" ng-controller="Notifications">
+    <div class="m-app-loading" ng-animate-children>
+        <!--
+        HACKY CODE WARNING: I'm putting Style block inside directive so that it
+        will be removed from the DOM when we remove the directive container.
+        -->
+        <style type="text/css">
+         
+        div.m-app-loading {
+            position: absolute;
+        }
+         
+        div.m-app-loading div.animated-container {
+            background-color: #333333 ;
+            bottom: 0px ;
+            left: 0px ;
+            opacity: 1.0 ;
+            position: fixed;
+            right: 0px ;
+            top: 0px ;
+            z-index: 999999 ;
+        }
+         
+        /* Used to initialize the ng-leave animation state. */
+        div.m-app-loading div.animated-container.ng-leave {
+            opacity: 1.0 ;
+            transition: all linear 200ms ;
+            -webkit-transition: all linear 200ms ;
+        }
+         
+        /* Used to set the end properties of the ng-leave animation state. */
+        div.m-app-loading div.animated-container.ng-leave-active {
+            opacity: 0 ;
+        }
+         
+        div.m-app-loading div.messaging {
+            color: #FFFFFF ;
+            font-family: monospace ;
+            left: 0px ;
+            margin-top: -37px ;
+            position: absolute ;
+            right: 0px ;
+            text-align: center ;
+            top: 50% ;
+        }
+         
+        div.m-app-loading h1 {
+            font-size: 26px ;
+            line-height: 35px ;
+            margin: 0px 0px 20px 0px ;
+        }
+         
+        div.m-app-loading p {
+            font-size: 18px ;
+            line-height: 14px ;
+            margin: 0px 0px 0px 0px ;
+        }
+        </style>
+
+        <!-- BEGIN: Actual animated container. -->
+        <div class="animated-container">
+            <div class="messaging">
+                <p>
+                    Please stand by while CATS is initializing ...
+                </p>
+            </div>
+        </div>
+        <!-- END: Actual animated container. -->
+    </div>
+    <!-- END: App-Loading Screen. -->
+
+    <!-- start: Header -->
+    <nav class="navbar navbar-default header navbar-fixed-top">
+        <div class="col-md-12 nav-wrapper">
+            <div class="navbar-header" style="width:100%;">
+                <div class="opener-left-menu is-open">
+                    <span class="is-image">
+                        <img src="./ASSETS/img/logo_plain.png" style="height:46px;"/>
+                    </span>
+                    <span class="is-not-image">
+                        <span class="top"></span>
+                        <span class="middle"></span>
+                        <span class="bottom"></span>
+                    </span>
+                </div>
+                <a href="#/" class="navbar-brand"> 
+                    <b>CATS</b>
+                </a>
+
+                <ul class="nav navbar-nav search-nav">
+                    <li>
+                        <div class="search">
+                            <span class="fa fa-search icon-search" style="font-size:23px;"></span>
+                            <div class="form-group form-animate-text" > <!-- style="width:500px;" -->
+                                <input type="text" class="form-text" required>
+                                <!-- <div 
+                                    angucomplete-alt
+                                    placeholder="Type here to Search"
+                                    maxlength="50"
+                                    pause="500"
+                                    selected-object="employee_selected"
+                                    remote-url="./FUNCTIONS/Employees/search.php?text="
+                                    search-fields="name"
+                                    title-field="name"
+                                    minlength="3" 
+                                    template-url="autocomplete-bare"
+                                    ng-class="form-text label-search"
+                                    clear-selected="true"
+                                > -->
+                                <span class="bar"></span>
+                                <label class="label-search">Type here to <b>Search</b> </label>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right user-nav" style="margin-right:20px;" ng-controller="Avatar">
+
+                    <li class="user-name"><span>{{ profile.first_name + " " + profile.last_name }}</span></li>
+                    <li class="dropdown avatar-dropdown">
+                        <img src="./ASSETS/img/avatar.gif" class="img-circle avatar" alt="user name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"/>
+                        <ul class="dropdown-menu user-dropdown">
+                            <li><a href="#"><span class="fa fa-user"></span> My Profile</a></li>
+                            <li><a href="#"><span class="fa fa-calendar"></span> My Calendar</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="more">
+                                <ul>
+                                    <li><a href=""><span class="fa fa-cogs"></span></a></li>
+                                    <li><a href=""><span class="fa fa-lock"></span></a></li>
+                                    <li><a href="" ng-click="logout()"><span class="fa fa-power-off"></span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- <a href="#" class="opener-right-menu"><span class="fa fa-comments"></span></a> -->
+                        <a><span class="opener-right-menu fa fa-comments"></span> <span class="badge badge-primary">{{notifications.count}}</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- end: Header -->
+
+    <div class="container-fluid mimin-wrapper">
+        <!-- start:Left Menu -->
+        <div id="left-menu">
+            <div class="sub-left-menu scroll">
+                <ul class="nav nav-list">
+                    <li>
+                        <!-- <div class="left-bg" style="margin-top:10px;"></div> -->
+
+                        <img src="./ASSETS/img/left-bg.png" style="height: 100px; margin-left:35px; margin-top:5px;"/>
+                    </li>
+                    <!-- <li><div style="background:url('./ASSETS/img/cats_bg.png') no-repeat fixed center;"></div></li> -->
+                    <li class="time">
+                        <h1 class="animated fadeInLeft">21:00</h1>
+                        <p class="animated fadeInRight">Sat,October 1st 2029</p>
+                    </li>
+                    <li class="active ripple"><a href="#/dashboard"><span class="fa fa-home"></span>Dashboard</a></li>
+                    <!-- <li class="active ripple">
+                        <a class="tree-toggle nav-header"><span class="fa-home fa"></span> Dashboard 
+                            <span class="fa-angle-right fa right-arrow text-right"></span>
+                        </a>
+                        <ul class="nav nav-list tree">
+                            <li><a href="dashboard-v1.html">Dashboard v.1</a></li>
+                            <li><a href="dashboard-v2.html">Dashboard v.2</a></li>
+                        </ul>
+                    </li> -->
+                    
+                    <li class="ripple"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li>
+
+                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-table"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                        <ul class="nav nav-list tree">
+                            <li><a href="#/report/candidates">Candidates</a></li>
+                        </ul>
+                    </li>
+                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-cogs"></span> Admin  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                        <ul class="nav nav-list tree">
+                            <li><a href="#/admin/permission">Permission</a></li>
+                            <li><a href="#/admin/clients">Clients</a></li>
+                            <li><a href="#/admin/sources">Sources</a></li>
+                            <li><a href="#/admin/profiles">Profiles</a></li>
+                        </ul>
+                    </li>
+                    <li class="ripple"><a href="#/calendar"><span class="fa fa-calendar-o"></span>Calendar</a></li>
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- end: Left Menu -->
+
+        <div ng-view=""></div>
+
+        <div id="right-menu" style="background-color:#CCC;">
+            {{notifications.data}}
+        </div>
+    </div>  
+
+    <!-- start: Javascript -->
+    <script src="./ASSETS/js/jquery.min.js"></script>
+    <script src="./ASSETS/js/jquery.ui.min.js"></script>
+    <script src="./ASSETS/js/bootstrap.min.js"></script>
+   
+    <!-- Angular.js Libraries -->
+    <script src="./ASSETS/js/angularjs/angular.min.js"></script>
+    <script src="./ASSETS/js/angularjs/angular-route.min.js"></script>
+    <script src="./ASSETS/js/angularjs/angular-cookies.min.js"></script>
+    <script src="./ASSETS/js/angularjs/angular-md5.js"></script>
+
+    <!-- MODULE -->
+    <script src="./JS/module.js"></script>
+
+    <!-- CONTROLLERS -->
+    <script src="./JS/controllers/Avatar.js"></script>
+    <script src="./JS/controllers/Dashboard.js"></script>
+    <script src="./JS/controllers/Tracker.js"></script>
+    <script src="./JS/controllers/ReportDump.js"></script>
+    <script src="./JS/controllers/Applicant.js"></script>
+    <script src="./JS/controllers/Notifications.js"></script>
+    <script src="./JS/controllers/Permission.js"></script>
+    <script src="./JS/controllers/Clients.js"></script>
+    <script src="./JS/controllers/Sources.js"></script>
+    <script src="./JS/controllers/Profiles.js"></script>
+
+    <!-- FACTORIES -->
+    <script src="./JS/factories/SessionFactory.js"></script>    
+    <script src="./JS/factories/ReportsFactory.js"></script>  
+    <script src="./JS/factories/ApplicantsFactory.js"></script>  
+    <script src="./JS/factories/SourcesFactory.js"></script>  
+    <script src="./JS/factories/JobsFactory.js"></script>  
+    <script src="./JS/factories/ClientsFactory.js"></script>  
+    <script src="./JS/factories/EmployeesFactory.js"></script>  
+    <script src="./JS/factories/StatusesFactory.js"></script>
+    <script src="./JS/factories/NotificationsFactory.js"></script>
+    <script src="./JS/factories/PermissionFactory.js"></script>
+
+    <!-- DIRECTIVES -->
+    <script src="./JS/directives/splash.js"></script>
+
+    <!-- plugins -->
+    <script src="./ASSETS/js/plugins/moment.min.js"></script>
+    <script src="./ASSETS/js/plugins/fullcalendar.min.js"></script>
+    <script src="./ASSETS/js/plugins/jquery.nicescroll.js"></script>
+    <script src="./ASSETS/js/plugins/chart.min.js"></script>
+    <script src="./ASSETS/js/plugins/md5/angular-md5.js"></script>
+    <script src="./ASSETS/js/plugins/notification/angular-ui-notification.min.js"></script>
+    <script src="./ASSETS/js/plugins/autocomplete/angucomplete-alt.js"></script>
+    <script src="./ASSETS/js/plugins/dropdown/isteven-multi-select.js"></script>
+    <script src="./ASSETS/js/plugins/upload/ng-file-upload.min.js"></script>
+
+    <script src="./ASSETS/js/plugins/dialog/ngDialog.js"></script>
+    <script src="./ASSETS/js/plugins/bootstrap-material-datetimepicker.js"></script>
+    <script src="./ASSETS/js/plugins/jquery.mask.min.js"></script>
+    <script src="./ASSETS/js/plugins/select2.full.min.js"></script>
+    <script src="./ASSETS/js/plugins/dropzone.js"></script>
+    <script src="./ASSETS/js/plugins/jquery.datatables.min.js"></script>
+    <script src="./ASSETS/js/plugins/datatables.bootstrap.min.js"></script>
+
+
+    <!-- custom -->
+    <script src="./ASSETS/js/main.js"></script>
+
+    <script type="text/ng-template" id="UpdateModal">
+        <div class="ngdialog-message" style="width: 500px;">
+            <div style="margin-top: -15px;">
+                <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+                
+            </div>
+            <div>
+                <table style="width: 85%;">
+                    <thead>
+                        <tr>
+                            <td>
+                                Remarks : (Please state your reason for this update)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea ng-model="modal.data.remarks" cols="45" rows="10"></textarea>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="ngdialog-buttons">
+            <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
+            <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="autocomplete-bare">
+        <div>
+            
+            <input ng-model="searchStr"
+                type="text"
+                placeholder="{{placeholder}}"
+                ng-focus="onFocusHandler()"
+                class="form-text "
+                ng-class="label-search"
+                ng-focus="resetHideResults()"
+                ng-blur="hideResults($event)"
+                autocapitalize="off"
+                autocorrect="off"
+                autocomplete="off"
+                ng-change="inputChangeHandler(searchStr)"
+            >
+          
+            <div class="angucomplete-dropdown" ng-show="showDropdown" style="width: 100%;"> 
+                <div class="angucomplete-searching" ng-show="searching" ng-bind="textSearching"></div>
+                <div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>
+                <div class="angucomplete-row" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{'angucomplete-selected-row': $index == currentIndex}">
+                    <div ng-if="imageField" class="angucomplete-image-holder">
+                        <img ng-if="result.image && result.image != ''" ng-src="{{result.image}}" class="angucomplete-image"/>
+                        <div ng-if="!result.image && result.image != ''" class="angucomplete-image-default"></div>
+                    </div>
+                    
+                    <div class="angucomplete-title" ng-if="matchClass" ng-bind-html="result.title"></div>
+                    <div class="angucomplete-title" ng-if="!matchClass">{{ result.title }}</div>
+                    <div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description" ng-bind-html="result.description"></div>
+                    <div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description">{{result.description}}</div>
+                </div>
+                <div class="angucomplete-row" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
+                </div>
+            </div>
+        </div>
+    </script>
+    
+  </body>
+</html>

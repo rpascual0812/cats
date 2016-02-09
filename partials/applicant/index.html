@@ -1,0 +1,375 @@
+<!-- start: Content -->
+<div id="content">
+    <div class="col-md-12" style="padding:20px;">
+        <div class="col-md-12 padding-0">
+            <div class="panel box-shadow-none content-header">
+                <div class="panel-body">
+                    <div class="col-md-8">
+                        <h3 class="animated fadeInLeft" style="font-weight:bold;">{{ applicant.first_name }} {{applicant.middle_name}} {{ applicant.last_name }}</h3>
+                        <p class="animated fadeInDown">
+                            Home <span class="fa-angle-right fa"></span> 
+                            Candidate <span class="fa-angle-right fa"></span> 
+                            {{ applicant.first_name }} {{applicant.middle_name}} {{ applicant.last_name }}
+                        </p>
+                    </div>
+                    <div style="text-align:right;">
+                        <a href="#/report/candidates">
+                            <button class=" btn btn-circle btn-outline btn-warning" value="primary" data-toggle="tooltip" data-placement="top" title="BACK">
+                                <span class="fa fa-mail-reply"></span>
+                            </button>
+                        </a>
+
+                        <a>
+                            <button class=" btn btn-circle btn-outline btn-danger" value="primary" data-toggle="tooltip" data-placement="top" title="DELETE">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </a>
+
+                        
+                        <!-- <button class=" btn btn-circle btn-outline btn-primary" value="primary" data-toggle="tooltip" data-placement="top" title="UPDATE STATUS" ng-click="update_status()">
+                            <span class="fa fa-save"></span>
+                        </button> -->
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 padding-0">
+                <div class="panel">
+                    <div class="panel-body">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tbody>
+                                <tr class="edit-form" style="color:#2196f3;">
+                                    <td class="col-md-3" style="font-weight:bold;">Applicant ID</td>
+                                    <td class="col-md-5">
+                                        <span>
+                                            <b>CHRS-{{applicant.applicant_id}}</b>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Profiled for</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.profiled_for.text" >
+                                            {{applicant.profiled_for}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.profiled_for.input">
+                                            <select id="form_profiled_for" data-ng-model="form.profiled_for_id" style="width:350px;">
+                                                <option ng-repeat="(k, v) in data.jobpositions" value="{{v.pk}}">{{ v.position }}</option>
+                                            </select>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('profiled_for')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Client</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.client.text">
+                                            {{applicant.client}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('client')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.client.input">
+                                            <!-- <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.client" /> -->
+                                            <select id="form_client" class="form-control ng-pristine ng-valid ng-touched input-boxes" data-ng-model="form.client_id" style="width:350px;">
+                                                <option ng-repeat="(k, v) in data.clients" value="{{v.pk}}">{{ v.client }}</option>
+                                            </select>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('client')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('client')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Status</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.status.text">
+                                            {{applicant.status}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('status')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.status.input">
+                                            <!-- <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.status" /> -->
+                                            <select id="form_status" class="form-control ng-pristine ng-valid ng-touched input-boxes" data-ng-model="form.status_id" style="width:350px;">
+                                                <option ng-repeat="(k, v) in data.statuses" value="{{v.pk}}">{{ v.status }}</option>
+                                            </select>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('status')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('status')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-body">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tbody>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Date Received</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.date_received.text">
+                                            {{applicant.date_received}} {{applicant.time_received }}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('date_received')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.date_received.input">
+                                            <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.date_received" />
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('date_received')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('date_received')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+
+                                        
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Source</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.source.text">
+                                            {{applicant.source}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('source')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.source.input">
+                                            <select id="form_source" data-ng-model="form.source_id" data-ng-change="sources_changed()" style="width:350px;">
+                                                <option ng-repeat="(k, v) in data.sources" value="{{v.pk}}">{{ v.source }}</option>
+                                            </select>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('source')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('source')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Candidate Name</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.name.text">
+                                            {{applicant.last_name}}, {{applicant.first_name}} {{applicant.middle_name}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('name')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.name.input">
+                                            <table>
+                                                <tr>
+                                                    <td>Last Name: </td>
+                                                    <td><input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.last_name" /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>First Name:</td>
+                                                    <td><input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.first_name" /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Middle Name:</td>
+                                                    <td><input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.middle_name" /></td>
+                                                </tr>
+                                            </table>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('name')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('name')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Birth Date</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.birthdate.text">
+                                            {{applicant.birthdate}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('birthdate')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.birthdate.input">
+                                            <input id="formedit_datereceived" class="mask-placeholder" style="width:160px;" type="text" maxlength="50" data-ng-model="form.birthdate" />
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('birthdate')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('birthdate')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Mobile Number</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.contact_number.text">
+                                            {{applicant.contact_number}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('contact_number')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.contact_number.input">
+                                            <input id="formedit_datereceived" class="mask-phone" style="width:160px;" type="text" maxlength="50" data-ng-model="form.contact_number" />
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('contact_number')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('contact_number')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Email Address</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.email_address.text">
+                                            {{applicant.email_address}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('email_address')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.email_address.input">
+                                            <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.email_address" />
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('email_address')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('email_address')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">CV</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.cv.text">
+                                            {{applicant.cv}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('cv')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.cv.input">
+                                            <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.cv" />
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('cv')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('cv')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                
+                                <!-- <tr class="edit-form">
+                                    <td class="col-md-3">Talent Acquisition</td>
+                                    <td class="col-md-10">
+                                        <span ng-show="display.talent_acquisition.text">
+                                            {{applicant.talent_acquisition}}
+
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                        </span>
+                                        <span ng-show="display.talent_acquisition.input">
+                                            
+                                            <select id="form_talent_acquisition" class="form-control ng-pristine ng-valid ng-touched input-boxes" data-ng-model="form.talent_acquisition" style="width:350px;">
+                                                <option ng-repeat="(k, v) in data.talent_acquisitions" value="{{v.employee_id}}">{{ v.first_name + " " + v.last_name }}</option>
+                                            </select>
+
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel">
+                    <div class="panel-body">
+                        <h3 style="margin-top:-5px;">Remarks:</h3>
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr ng-repeat="(k,v) in remarks">
+                                <td>
+                                    <div>
+                                        {{v.remarks}}
+                                    </div>
+                                    <div style="color:#2196f3; font-size:10px; margin-top:5px;">
+                                        {{v.name}} {{v.date_created}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/ng-template" id="update_status_modal">
+    <div class="ngdialog-message" style="width: 500px;">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;"> {{ modal.title }}</span></h3>
+            
+        </div>
+        <div>
+            <table style="width: 85%;">
+                <thead>
+                    <tr>
+                        <td>
+                            Status : 
+                        </td>
+                        <td>
+                            <select></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Remarks : 
+                        </td>
+                        <td>
+                            <textarea></textarea>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">Close</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">Save</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        $('#form_date_received').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+        
+
+        $('.mask-placeholder').mask("0000-00-00", {placeholder: "YYYY-MM-DD"});
+        $('.mask-phone').mask('0000-000-0000');
+
+        $("#form_source").select2({
+            placeholder: "Select a Source",
+            allowClear: false
+        });
+
+        $("#form_profiled_for").select2({
+            placeholder: "Select a Job Position",
+            allowClear: false
+        });
+
+        $("#form_client").select2({
+            placeholder: "Select a Client",
+            allowClear: false
+        });
+
+        $("#form_status").select2({
+            placeholder: "Select a Status",
+            allowClear: false
+        });
+
+        $("#form_talent_acquisition").select2({
+            placeholder: "Select a Talent Acquisition",
+            allowClear: false
+        });
+
+        $("#my-awesome-dropzone").dropzone({ url: "/file/post" });
+    });
+</script>

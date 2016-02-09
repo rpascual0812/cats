@@ -1,0 +1,288 @@
+<style type="text/css">
+.fileupload input {
+    width: 100%;
+    height: 32px;
+    border: solid 1px #CCC;
+}
+
+.fileupload .left {
+    width: 80%;
+    float: left;
+}
+
+.fileupload .right {
+    width: 20%;
+    float: left;
+}
+</style>
+<!-- start: Content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Tracker</h3>
+                <p class="animated fadeInDown">
+                    Home <span class="fa-angle-right fa"></span> Tracker
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="col-md-18">
+                <table class="table table-striped table-bordered" style="width:70%;">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-2">Date Received</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input id="form_date_received" type="text" maxlength="50" class="form-text" data-ng-model="form.date_received" ng-class="formerror.date_received" ng-change="clearerror('date_received')" required/>
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Source</td>
+                            <td class="col-md-10">
+                                <div>
+                                    <!-- <select id="form_source" data-ng-model="form.source" data-ng-change="sources_changed()" style="width:100%;" ng-class="formerror.source" ng-change="clearerror('source')" required>
+                                        <option ng-repeat="(k, v) in data.sources" value="{{v.pk}}">{{ v.source }}</option>
+                                    </select> -->
+                                    <div
+                                        isteven-multi-select
+                                        input-model="data.sources"
+                                        output-model="form.source"
+                                        button-label="icon name"
+                                        item-label="icon name maker"
+                                        tick-property="ticked"
+                                        selection-mode="single"
+                                        style="width:295px;"
+                                        ng-class="formerror.source"
+                                        max-height="200px"
+                                    >
+                                    </div>
+                                    
+                                </div>
+                                <div ng-if="details.otheroptions" style="margin-top: 5px;">
+                                    Other Source: <input type="text" class="form-control ng-pristine ng-valid ng-touched input-boxes" required/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Last Name</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input type="text" maxlength="50" data-ng-model="form.last_name" class="form-control ng-pristine ng-valid ng-touched input-boxes" ng-class="formerror.last_name" ng-change="clearerror('last_name')" required/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">First Name</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input type="text" maxlength="50" data-ng-model="form.first_name" class="form-control ng-pristine ng-valid ng-touched input-boxes" ng-class="formerror.first_name" ng-change="clearerror('first_name')" required/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Middle Name</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input type="text" maxlength="50" data-ng-model="form.middle_name" class="form-control ng-pristine ng-valid ng-touched input-boxes" ng-class="formerror.middle_name" ng-change="clearerror('middle_name')" required/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Birth Date</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <!-- <input id="form_birthdate" type="text" maxlength="50" data-ng-model="data.form.birthdate" class="form-control ng-pristine ng-valid ng-touched input-boxes" /> -->
+                                    <input data-ng-model="form.birthdate" type="text" class="form-text mask-placeholder" placeholder="__/__/____" ng-class="formerror.birthdate" ng-change="clearerror('birthdate')" required>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Mobile Number</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input data-ng-model="form.contact_number" type="text" class="form-text mask-phone" placeholder="0000-000-0000" ng-class="formerror.contact_number" ng-change="clearerror('contact_number')" required>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Email Address</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <input data-ng-model="form.email_address" class="form-control ng-pristine ng-valid ng-touched input-boxes" type="text" class="form-text" ng-class="formerror.email_address" ng-change="clearerror('email_address')" required>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">CV</td>
+                            <td>
+
+                                <!-- <div class="fileupload">
+                                    <div class="left">
+                                        <input type="file" file-model="myFile" ng-model="cv" />
+                                    </div>
+                                    <div class="right">
+                                        <input type="button" class="btn btn-info" value="UPLOAD" ng-click="uploadFile()">
+                                    </div>
+                                </div> -->
+                                <!-- <form name="myForm">
+                                    <fieldset> -->
+                                <div class="fileupload">
+                                    <div class="left">
+                                        <input type="file" 
+                                            ngf-select 
+                                            ng-model="picFile" 
+                                            name="file"
+                                            ngf-pattern="'.pdf,.jpg,.doc,.docx,.odt'"
+                                            ngf-max-size="10MB" 
+                                            required
+                                            ngf-model-invalid="errorFiles"
+                                        >
+                                        <i ng-show="myForm.file.$error.maxSize">File too large 
+                                            {{errorFiles[0].size / 1000000|number:1}}MB: max 10M</i>
+                                        
+                                    </div>
+                                    <div class="right">
+                                        <input type="button" class="btn btn-info" value="UPLOAD" ng-click="uploadPic(picFile)" />
+                                        <span ng-show="picFile.result">Upload Successful</span>
+                                        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                                    </div>
+                                    <!-- </fieldset>
+                                    <br>
+                                </form> -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Profiled for</td>
+                            <td class="col-md-5">
+                                <div>                                    
+                                    <!-- <select id="form_profiled_for" data-ng-model="form.profiled_for" style="width:100%;" ng-class="formerror.profiled_for" ng-change="clearerror('profiled_for')" required>
+                                        <option ng-repeat="(k, v) in data.jobpositions" value="{{v.pk}}">{{ v.position }}</option>
+                                    </select> -->
+                                    <div
+                                        isteven-multi-select
+                                        input-model="data.jobpositions"
+                                        output-model="form.profiled_for"
+                                        button-label="icon name"
+                                        item-label="icon name maker"
+                                        tick-property="ticked"
+                                        selection-mode="single"
+                                        style="width:295px;"
+                                        max-height="200px"
+                                    >
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Client</td>
+                            <td class="col-md-5">
+                                <div>
+                                    <!-- <select id="form_client" data-ng-model="form.client" style="width:100%;" ng-class="formerror.client" ng-change="clearerror('client')" required>
+                                        <option ng-repeat="(k, v) in data.clients" value="{{v.pk}}">{{ v.client }}</option>
+                                    </select> -->
+                                    <div
+                                        isteven-multi-select
+                                        input-model="data.clients"
+                                        output-model="form.client"
+                                        button-label="icon name"
+                                        item-label="icon name maker"
+                                        tick-property="ticked"
+                                        selection-mode="single"
+                                        style="width:295px;"
+                                        max-height="200px"
+                                    >
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2">Talent Acquisition</td>
+                            <td class="col-md-10">
+                                <div>
+                                    <!-- <select id="form_talent_acquisition" data-ng-model="form.talent_acquisition" style="width:100%;" ng-class="formerror.talent_acquisition" ng-change="clearerror('talent_acquisition')" required>
+                                        <option ng-repeat="(k, v) in data.talent_acquisitions" value="{{v.employee_id}}">{{ v.first_name + " " + v.last_name }}</option>
+                                    </select> -->
+                                    <div
+                                        isteven-multi-select
+                                        input-model="data.talent_acquisitions"
+                                        output-model="form.talent_acquisition"
+                                        button-label="icon name"
+                                        item-label="icon name maker"
+                                        tick-property="ticked"
+                                        selection-mode="single"
+                                        style="width:295px;"
+                                        max-height="200px"
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-5">
+
+            </div>
+            <div class="col-md-6">            
+                <input type="submit" class="col-md-3 btn btn-warning" value="Reset" ng-click="reset()">
+                <input type="submit" class="col-md-3 btn btn-primary" value="Submit" ng-click="submit()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //$('.datetime').bootstrapMaterialDatePicker({ format : 'dddd DD MMMM YYYY - HH:mm',animation:true});
+        $('#form_date_received').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+
+        $('.mask-placeholder').mask("0000-00-00", {placeholder: "YYYY-MM-DD"});
+        $('.mask-phone').mask('0000-000-0000');
+
+        $("#form_source").select2({
+            placeholder: "Select a Source",
+            allowClear: false
+        });
+
+        $("#form_profiled_for").select2({
+            placeholder: "Select a Job Position",
+            allowClear: false
+        });
+
+        $("#form_client").select2({
+            placeholder: "Select a Client",
+            allowClear: false
+        });
+
+        $("#form_talent_acquisition").select2({
+            placeholder: "Select a Talent Acquisition",
+            allowClear: false
+        });
+
+        $("#my-awesome-dropzone").dropzone({ url: "./FUNCTIONS/Tracker/upload.php" }, function(data){
+            console.log(data);
+        });
+    });
+</script>
+
+<script type="text/ng-template" id="CVModal">
+    <div class="ngdialog-message" style="width: 500px;">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+        </div>
+        <div>
+            <p>{{modal.message}}</p>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+    </div>
+</script>

@@ -1,0 +1,90 @@
+<!-- start: Content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Candidates</h3>
+                <p class="animated fadeInDown">
+                    Home <span class="fa-angle-right fa"></span> 
+                    Reports <span class="fa-angle-right fa"></span> Candidates
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div style="padding-left: 20px;">
+                <h4>
+                    <select ng-model="filter.datetype" ng-hide="true">
+                      <option value="Date Submitted">Date Submitted</option>
+                      <option value="Date Received">Date Received</option>
+                    </select>
+                    Date From: <input ng-model="filter.datefrom" type="text" id="datefrom" style="width:120px;"/>
+                    Date To: <input ng-model="filter.dateto" type="text" id="dateto" style="width:120px;"/>
+
+                    <input type="button" class="btn btn-primary" value="SEARCH" ng-click="DUMP()">
+                    <input type="button" class="btn btn-success" value="EXPORT" ng-click="EXPORT()">
+                </h4>
+            </div>
+            <div style="height:50px; width:100%;">
+
+            </div>
+            <div class="responsive-table">
+                <table id="datatables-example" class="report table table-striped table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date Received</th>
+                            <th>Time Received</th>
+                            <th>Date Submitted</th>
+                            <th>Source</th>
+                            <th>Sourcer</th>
+                            <!-- <th>Applicant ID</th> -->
+                            <th>Name</th>
+                            <th>Birth Date</th>
+                            <!-- <th>Mobile Number</th> -->
+                            <th>Profiled For</th>
+                            <th>Client</th>
+                            <th>Talent Acquisition</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <!-- JQuery -->
+                    <!-- <tbody id="tbody-dumpdata">
+
+                    </tbody> -->
+
+                    <tbody>
+                        <tr ng-repeat="(k, v) in dumpdata" ng-click="edit_applicant(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
+                            <td>{{v.date_received}}</td>
+                            <td>{{v.time_received}}</td>
+                            <td>{{v.date_created}}</td>
+                            <td>{{v.source}}</td>
+                            <td>{{v.created_by}}</td>
+                            <!-- <td>{{v.applicant_id}}</td> -->
+                            <td>{{v.first_name +" "+v.last_name}}</td>
+                            <td>{{v.birthdate}}</td>
+                            <!-- <td>{{v.contact_number}}</td> -->
+                            <td>{{v.profiled_for}}</td>
+                            <td>{{v.client}}</td>
+                            <td>{{v.talent_acquisition}}</td>
+                            <td>{{v.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //$('#datatables-example').DataTable();
+
+        $('#datatables-example_filter').hide();
+
+        $('#datefrom').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+        $('#dateto').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+    });
+
+</script>

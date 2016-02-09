@@ -1,0 +1,164 @@
+<style type="text/css">
+.searchinput {
+    border: 1px solid #2196f3;
+    background-color: #e1f2fe !important;
+}
+</style>
+<!-- start: Content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-8">
+                <h3 class="animated fadeInLeft">Permission</h3>
+                <p class="animated fadeInDown">
+                    Administration <span class="fa-angle-right fa"></span> Permission
+                </p>
+            </div>
+            <div style="text-align:right;">
+                <a>
+                    <button ng-click="reset()" class=" btn btn-circle btn-outline btn-warning" value="primary" data-toggle="tooltip" data-placement="top" title="RESET">
+                        <span class="fa fa-refresh"></span>
+                    </button>
+                </a>
+
+                <a>
+                    <button ng-disabled="(employees_permissions.length>0)?false:true" ng-click="save()" class=" btn btn-circle btn-outline btn-primary" value="primary" data-toggle="tooltip" data-placement="top" title="SAVE">
+                        <span class="fa fa-save"></span>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <div 
+                    angucomplete-alt
+                    placeholder="Type here to search employees"
+                    maxlength="50"
+                    pause="500"
+                    selected-object="employee_selected"
+                    remote-url="./FUNCTIONS/Employees/search.php?text="
+                    search-fields="name"
+                    title-field="name"
+                    minlength="1" 
+                    input-class="form-control form-control-small" 
+                    match-class="highlight"
+                    template-url="autocomplete"
+                    class="searchinput"
+                >
+
+            </div>
+            <div class="col-md-12">
+                <h3>Tracker</h3>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <td>
+                            <span ng-repeat="(k, v) in permissions.Tracker" style="margin-left: 10px;">
+                                <div class="form-group form-animate-checkbox">
+                                    <input 
+                                        id="{{v}}" 
+                                        type="checkbox" 
+                                        class="checkbox" 
+                                        ng-click="update_permission(v)" 
+                                        ng-checked="contains(employees_permissions, v)"
+                                        ng-disabled="(search.pk)?false:true"
+                                    />
+                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
+                                </div>
+                            </span>        
+                        </td>
+                    </tr>
+                </table>
+                <div style="width:100%; height:30px;"></div>
+                <h3>Reports</h3>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <td>
+                            <span ng-repeat="(k, v) in permissions.Reports" style="margin-left: 10px;">
+                                <div class="form-group form-animate-checkbox">
+                                    <input 
+                                        id="{{v}}" 
+                                        type="checkbox" 
+                                        class="checkbox" 
+                                        ng-click="update_permission(v)" 
+                                        ng-checked="contains(employees_permissions, v)"
+                                        ng-disabled="(search.pk)?false:true"
+                                    />
+                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
+                                </div>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <div style="width:100%; height:30px;"></div>
+                <h3>Admin</h3>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <td>
+                            <span ng-repeat="(k, v) in permissions.Admin" style="margin-left: 10px;">
+                                <div class="form-group form-animate-checkbox">
+                                    <input 
+                                        id="{{v}}" 
+                                        type="checkbox" 
+                                        class="checkbox" 
+                                        ng-click="update_permission(v)" 
+                                        ng-checked="contains(employees_permissions, v)"
+                                        ng-disabled="(search.pk)?false:true"
+                                    />
+                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
+                                </div>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+    });
+</script>
+<!-- end: Javascript -->
+
+<script type="text/ng-template" id="autocomplete">
+    <div class="angucomplete-holder" ng-class="{'angucomplete-dropdown-visible': showDropdown}">
+        
+        <input ng-model="searchStr"
+            ng-disabled="disableInput"
+            type="text"
+            placeholder="{{placeholder}}"
+            ng-focus="onFocusHandler()"
+            class="{{inputClass}} searchinput"
+            ng-focus="resetHideResults()"
+            ng-blur="hideResults($event)"
+            autocapitalize="off"
+            autocorrect="off"
+            autocomplete="off"
+            ng-change="inputChangeHandler(searchStr)"
+        >
+      
+        <div class="angucomplete-dropdown" ng-show="showDropdown" style="width: 100%;"> 
+            <div class="angucomplete-searching" ng-show="searching" ng-bind="textSearching"></div>
+            <div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>
+            <div class="angucomplete-row" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{'angucomplete-selected-row': $index == currentIndex}">
+                <div ng-if="imageField" class="angucomplete-image-holder">
+                    <img ng-if="result.image && result.image != ''" ng-src="{{result.image}}" class="angucomplete-image"/>
+                    <div ng-if="!result.image && result.image != ''" class="angucomplete-image-default"></div>
+                </div>
+                
+                <div class="angucomplete-title" ng-if="matchClass" ng-bind-html="result.title"></div>
+                <div class="angucomplete-title" ng-if="!matchClass">{{ result.title }}</div>
+                <div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description" ng-bind-html="result.description"></div>
+                <div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description">{{result.description}}</div>
+            </div>
+            <div class="angucomplete-row" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
+                <!-- <div class="angucomplete-title">Select employee '{{ searchStr }}'</div> -->
+            </div>
+        </div>
+    </div>
+</script>

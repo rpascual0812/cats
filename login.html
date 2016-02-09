@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Career Hunter Recruitment Solutions, Applicant Tracking System">
+    <meta name="author" content="Rafael Aurelio Pascual">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHRS | Applicant Tracking System</title>
+
+    <!-- start: Css -->
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/bootstrap.min.css">
+
+    <!-- plugins -->
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/simple-line-icons.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/icheck/skins/flat/aero.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/style.css">
+    <!-- end: Css -->
+
+    <style type="text/css">
+    .time h1 {
+        margin-top: -10px;
+        font-weight: 500;
+        font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 70px;
+        text-align: center;
+        color: #FFF;
+    }
+
+    .time p {
+        margin-top: -20px;
+        text-align: center;
+        font-size: 12px;
+        color: #FFF;
+    }
+    </style>
+
+    <link rel="shortcut icon" href="./ASSETS/img/cats_logo.png">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+
+    <body id="mimin" class="dashboard form-signin-wrapper">
+        <div class="container">
+            <form class="form-signin">
+                <div class="panel periodic-login">
+                    <div class="time">
+                        <h1 class="animated fadeInLeft">21:00</h1>
+                        <p class="animated fadeInRight">Sat,October 1st 2029</p>
+                    </div>
+
+                    <div class="panel-body text-center">
+                        <!-- <h1 class="atomic-symbol">Mi</h1> -->
+                        <IMG SRC="./ASSETS/img/cats_logo.png" />
+                        <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                            <input id="employee_id" type="text" class="form-text" value="160002" required>
+                            <span class="bar"></span>
+                            <label>Employee ID</label>
+                        </div>
+                        <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                            <input id="employee_password" type="password" class="form-text" value="iloveyou" required>
+                            <span class="bar"></span>
+                            <label>Password</label>
+                        </div>
+                        <label class="pull-left">
+                        <input type="checkbox" class="icheck pull-left" name="checkbox1"/> Remember me
+                        </label>
+                        <input type="submit" class="btn col-md-12" value="Log in" onclick="login()"/>
+                    </div>
+                    <div class="text-center" style="padding:5px;">
+                        <a href="forgotpass.html">Forgot Password </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- end: Content -->
+        <!-- start: Javascript -->
+        <script src="./ASSETS/js/jquery.min.js"></script>
+        <script src="./ASSETS/js/jquery.ui.min.js"></script>
+        <script src="./ASSETS/js/bootstrap.min.js"></script>
+
+        <script src="./ASSETS/js/plugins/moment.min.js"></script>
+        <script src="./ASSETS/js/plugins/icheck.min.js"></script>
+        <script src="./ASSETS/js/plugins/jquery.nicescroll.js"></script>
+
+        <!-- custom -->
+        <script src="./ASSETS/js/main.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                checksession();
+
+                $('input').iCheck({
+                    checkboxClass: 'icheckbox_flat-aero',
+                    radioClass: 'iradio_flat-aero'
+                });
+            });
+
+            function checksession(){
+                $.ajax('./FUNCTIONS/session/getsession.php', {
+                    type: "POST",
+                    statusCode: {
+                        404: function(response){
+                            //do nothing
+                        }
+                    },
+                    success: function(data){
+                        window.location = window.location.href.replace('login.html','');
+                    }
+                });
+            }
+
+            function login(){
+                var error=0;
+                var empid = $('#employee_id').val();
+                var pass = $('#employee_password').val();
+
+                $.ajax('FUNCTIONS/Employees/authentication.php', {
+                    type: "POST",
+                    data: { empid : empid, password : pass },
+                    statusCode: {
+                        403: function(response){
+                            $('#div-message').empty().show().append(response.responseText);
+                            $('#div-message').addClass('error-message');
+                            setTimeout(hidemessage, 2000);
+                        }
+                    },
+                    success: function(data){
+                        window.location = window.location.href.replace('login.html','');
+                        // if(data.permission.Menu.Tracker){
+                        //     window.location = window.location.href.replace('login.html','#/tracker/pending');
+                        // }
+                        // else {
+                        //    window.location = window.location.href.replace('login.html','');
+                        //}
+                    }
+                });
+            }
+        </script>
+    <!-- end: Javascript -->
+    </body>
+</html>
