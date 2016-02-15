@@ -6,7 +6,8 @@ var app = angular.module('onload', [
                                     'ui-notification',
                                     'angucomplete-alt',
                                     'isteven-multi-select',
-                                    'ngFileUpload'
+                                    'ngFileUpload',
+                                    'ngTagsInput'
                                 ]);
 
 app.config(function($routeProvider){

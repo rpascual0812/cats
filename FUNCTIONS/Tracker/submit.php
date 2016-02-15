@@ -8,7 +8,7 @@ foreach($_POST as $k=>$v){
 }
 
 $class = new Applicants($data);
-$data = $class->create();
+$data = $class->create($data);
 
 header("HTTP/1.0 500 Internal Server Error");
 if($data['status']==true){

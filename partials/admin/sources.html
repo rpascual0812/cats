@@ -13,7 +13,22 @@
     <div class="panel">
         <div class="panel-body">
             <div class="col-md-12">
-                
+                <table datatable="ng" class="row-border hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="person in showCase.persons">
+                        <td>{{ person.id }}</td>
+                        <td>{{ person.firstName }}</td>
+                        <td>{{ person.lastName }}</td>
+                    </tr>
+                    </tbody>
+                </table>                
 
             </div>
         </div>

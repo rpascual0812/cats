@@ -25,7 +25,8 @@
     <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/notification/angular-ui-notification.min.css" >
     <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/autocomplete/angucomplete-alt.css" >
     <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/dropdown/isteven-multi-select.css" >
-    <!-- <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/autocomplete/structure.css" > -->
+    <!-- <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/tags/ng-tags-input.bootstrap.css" > -->
+    <link rel="stylesheet" type="text/css" href="./ASSETS/js/plugins/tags/ng-tags-input.css" >
 
     <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/bootstrap-material-datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/select2.min.css"/>
@@ -34,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="./ASSETS/css/style.css" >
 
     <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/datatables.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./ASSETS/css/plugins/summernote.css"/>
 	<!-- end: Css -->
 
 	<link rel="shortcut icon" href="./ASSETS/img/cats_logo.png">
@@ -180,7 +182,7 @@
                     </li>
                     <li>
                         <!-- <a href="#" class="opener-right-menu"><span class="fa fa-comments"></span></a> -->
-                        <a><span class="opener-right-menu fa fa-comments"></span> <span class="badge badge-primary">{{notifications.count}}</span></a>
+                        <a><span class="opener-right-menu fa fa-comments"></span> <span class="badge badge-primary" ng-if="notifications.count>0">{{notifications.count}}</span></a>
                     </li>
                 </ul>
             </div>
@@ -214,16 +216,16 @@
                         </ul>
                     </li> -->
                     
-                    <li class="ripple"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li>
+                    <li class="ripple" ng-if="permissions['New Candidate Form']"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li>
 
                     <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-table"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li><a href="#/report/candidates">Candidates</a></li>
+                            <li ng-if="permissions['Candidates']"><a href="#/report/candidates">Candidates</a></li>
                         </ul>
                     </li>
                     <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-cogs"></span> Admin  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li><a href="#/admin/permission">Permission</a></li>
+                            <li ng-if="permissions['Permission']"><a href="#/admin/permission">Permission</a></li>
                             <li><a href="#/admin/clients">Clients</a></li>
                             <li><a href="#/admin/sources">Sources</a></li>
                             <li><a href="#/admin/profiles">Profiles</a></li>
@@ -239,9 +241,49 @@
 
         <div ng-view=""></div>
 
-        <div id="right-menu" style="background-color:#CCC;">
-            {{notifications.data}}
+        <!-- start: Right Menu -->
+        <div id="right-menu">
+            <ul class="nav nav-tabs">
+                <li>
+                    <a data-toggle="tab" href="#right-menu-user">
+                        <span class="fa fa-comment-o fa-2x"></span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a data-toggle="tab" href="#right-menu-notif">
+                        <span class="fa fa-bell-o fa-2x"></span>
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#right-menu-config">
+                        <span class="fa fa-cog fa-2x"></span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="right-menu-user" class="tab-pane fade in active">
+                    <div class="col-md-12">
+                        <ul class="nav nav-list">
+                            <li ng-repeat="(k, v) in notifications.data" ng-click="open_notification(k)" ng-class="v.status" style="cursor:pointer;">
+                                <!-- <a href="#/report/candidates"> -->
+                                    <div class="name">
+                                        <h5><b>{{ v.notification }}</b></h5>
+                                        <p>{{ v.date_created }}</p>
+                                    </div>
+                                <!-- </a> -->
+                            </li>
+                            <!-- <li nd-if="notifications.data.length == 0">
+                                <div class="name">
+                                    <h5><b>No notifications</b></h5>
+                                </div>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- end: Right Menu -->
     </div>  
 
     <!-- start: Javascript -->
@@ -281,6 +323,7 @@
     <script src="./JS/factories/StatusesFactory.js"></script>
     <script src="./JS/factories/NotificationsFactory.js"></script>
     <script src="./JS/factories/PermissionFactory.js"></script>
+    <script src="./JS/factories/DashboardFactory.js"></script>
 
     <!-- DIRECTIVES -->
     <script src="./JS/directives/splash.js"></script>
@@ -295,6 +338,7 @@
     <script src="./ASSETS/js/plugins/autocomplete/angucomplete-alt.js"></script>
     <script src="./ASSETS/js/plugins/dropdown/isteven-multi-select.js"></script>
     <script src="./ASSETS/js/plugins/upload/ng-file-upload.min.js"></script>
+    <script src="./ASSETS/js/plugins/tags/ng-tags-input.js"></script>
 
     <script src="./ASSETS/js/plugins/dialog/ngDialog.js"></script>
     <script src="./ASSETS/js/plugins/bootstrap-material-datetimepicker.js"></script>
@@ -303,6 +347,7 @@
     <script src="./ASSETS/js/plugins/dropzone.js"></script>
     <script src="./ASSETS/js/plugins/jquery.datatables.min.js"></script>
     <script src="./ASSETS/js/plugins/datatables.bootstrap.min.js"></script>
+    <script src="./ASSETS/js/plugins/summernote.min.js"></script>
 
 
     <!-- custom -->

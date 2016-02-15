@@ -44,7 +44,7 @@ class Employees extends ClassParent {
                 from accounts
                 left join employees on (accounts.employee_id = employees.employee_id)
                 where employees.archived = false
-                and accounts.employee_id = $empid
+                and accounts.employee_id = '$empid'
                 and accounts.password = md5('$password')
                 ;
 EOT;
@@ -87,7 +87,10 @@ EOT;
                     first_name,
                     middle_name,
                     last_name,
-                    email_address
+                    email_address,
+                    business_email_address,
+                    position,
+                    level
                 from employees
                 where archived = false
                 and md5(pk::text) = '$this->pk'
@@ -110,7 +113,7 @@ EOT;
                     employee,
                     array_to_string(permission, '||') as permission
                 from employees_permission
-                where employees_pk = $employees_pk
+                where md5(employees_pk::text) = '$employees_pk'
                 ;
 EOT;
 
@@ -118,7 +121,10 @@ EOT;
     }
 
     public function save_permission($data){
-        $p = $this->permissions($data);
+        
+        $check = $data;
+        $check['employees_pk'] = md5($check['employees_pk']);
+        $p = $this->permissions($check);
 
         foreach($data as $k=>$v){
             $data[$k] = pg_escape_string(trim(strip_tags($v)));
@@ -126,7 +132,7 @@ EOT;
 
         $employees_pk = $data['employees_pk'];
         $employee_id = $data['employee_id'];
-        $employee = $data['employees'];
+        $employee = $data['employee'];
         $permission = "'{".$data['permission']."}'";
         
         if($p['status']){
@@ -135,7 +141,7 @@ EOT;
                     (permission)
                     =
                     ($permission)
-                    where employees_pk = $employees_pk
+                    where employees_pk = '$employees_pk'
                     ;
 EOT;
             return ClassParent::update($sql);
@@ -159,8 +165,6 @@ EOT;
 EOT;
             return ClassParent::insert($sql);
         }
-
-        
     }
 
     public function search($txt){

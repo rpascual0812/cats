@@ -336,3 +336,11 @@
     treeMenu();
     hide();
 })(jQuery);
+
+function validateEmail(email) {
+    var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    if (filter.test(enail))
+        return true;
+    else
+        return false;
+}

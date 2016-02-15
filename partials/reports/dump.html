@@ -1,4 +1,9 @@
 <!-- start: Content -->
+<style type="text/css">
+.checkBoxContainer {
+    font-size: 13px !important;
+}
+</style>
 <div id="content">
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
@@ -15,21 +20,76 @@
         <div class="panel-body">
             <div style="padding-left: 20px;">
                 <h4>
-                    <select ng-model="filter.datetype" ng-hide="true">
+                    <!-- <select ng-model="filter.datetype" ng-hide="true">
                       <option value="Date Submitted">Date Submitted</option>
                       <option value="Date Received">Date Received</option>
-                    </select>
-                    Date From: <input ng-model="filter.datefrom" type="text" id="datefrom" style="width:120px;"/>
-                    Date To: <input ng-model="filter.dateto" type="text" id="dateto" style="width:120px;"/>
-
-                    <input type="button" class="btn btn-primary" value="SEARCH" ng-click="DUMP()">
-                    <input type="button" class="btn btn-success" value="EXPORT" ng-click="EXPORT()">
+                    </select> -->
+                    
+                    <div style="float:left; width: 250px;">
+                        Date From: <input ng-model="filter.datefrom" type="text" id="datefrom" style="width:120px;"/>
+                    </div>
+                    <div style="float:left; width: 200px;">
+                        Date To: <input ng-model="filter.dateto" type="text" id="dateto" style="width:120px;"/>
+                    </div>
+                    <div style="float:left; width: 300px; margin-left: 10px; margin-right: 10px;">
+                        <div
+                                isteven-multi-select
+                                input-model="data.statuses"
+                                output-model="filter.status"
+                                button-label="icon name"
+                                item-label="icon name maker"
+                                tick-property="ticked"
+                                selection-mode="single"
+                                max-height="200px"
+                                max-width:"300px"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div style="float:left; width: 300px;">
+                        <input type="button" class="btn btn-primary" value="SEARCH" ng-click="DUMP()">
+                        <input type="button" class="btn btn-success" value="EXPORT" ng-click="EXPORT()">
+                    </div>
                 </h4>
             </div>
             <div style="height:50px; width:100%;">
 
             </div>
             <div class="responsive-table">
+                <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date Received</th>
+                            <th>Time Received</th>
+                            <th>Date Submitted</th>
+                            <th>Source</th>
+                            <th>Sourcer</th>
+                            <th>Name</th>
+                            <th>Birth Date</th>
+                            <th>Profiled For</th>
+                            <th>Client</th>
+                            <th>Talent Acquisition</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(k, v) in dumpdata" ng-click="edit_applicant(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
+                            <td>{{v.date_received}}</td>
+                            <td>{{v.time_received}}</td>
+                            <td>{{v.date_created}}</td>
+                            <td>{{v.source}}</td>
+                            <td>{{v.created_by}}</td>
+                            <td>{{v.first_name +" "+v.last_name}}</td>
+                            <td>{{v.birthdate}}</td>
+                            <td>{{v.profiled_for}}</td>
+                            <td>{{v.client}}</td>
+                            <td>{{v.talent_acquisition}}</td>
+                            <td>{{v.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 
                 <table id="datatables-example" class="report table table-striped table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -38,20 +98,14 @@
                             <th>Date Submitted</th>
                             <th>Source</th>
                             <th>Sourcer</th>
-                            <!-- <th>Applicant ID</th> -->
                             <th>Name</th>
                             <th>Birth Date</th>
-                            <!-- <th>Mobile Number</th> -->
                             <th>Profiled For</th>
                             <th>Client</th>
                             <th>Talent Acquisition</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <!-- JQuery -->
-                    <!-- <tbody id="tbody-dumpdata">
-
-                    </tbody> -->
 
                     <tbody>
                         <tr ng-repeat="(k, v) in dumpdata" ng-click="edit_applicant(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
@@ -60,10 +114,8 @@
                             <td>{{v.date_created}}</td>
                             <td>{{v.source}}</td>
                             <td>{{v.created_by}}</td>
-                            <!-- <td>{{v.applicant_id}}</td> -->
                             <td>{{v.first_name +" "+v.last_name}}</td>
                             <td>{{v.birthdate}}</td>
-                            <!-- <td>{{v.contact_number}}</td> -->
                             <td>{{v.profiled_for}}</td>
                             <td>{{v.client}}</td>
                             <td>{{v.talent_acquisition}}</td>
@@ -71,6 +123,7 @@
                         </tr>
                     </tbody>
                 </table>
+                -->
             </div>
         </div>
     </div>

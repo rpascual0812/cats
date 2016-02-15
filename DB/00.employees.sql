@@ -11,6 +11,8 @@ create table employees
 	last_name text not null,
 	email_address text not null,
 	business_email_address text not null,
+	position text not null,
+	level text not null,
 	department int[] not null,
 	archived boolean default false,
 	date_created timestamptz default now()
@@ -60,89 +62,49 @@ create table time_log
 );
 alter table time_log owner to chrs;
 
-insert into employees 
+create table departments
 (
-	employee_id,
-	first_name,
-	middle_name,
-	last_name,
-	email_address
-)
-values
-(
-	'070001',
-	'Wayne',
-	'',
-	'Lipardo',
-	'rwayne.lipardo@chrsglobal.com'
+	pk serial primary key,
+	department text not null,
+	code text not null,
+	archived boolean default false
 );
+alter table departments owner to chrs;
+create unique index code_unique_idx on departments (code);
+create unique index department_unique_idx on departments (department);
 
-insert into employees 
-(
-	employee_id,
-	first_name,
-	middle_name,
-	last_name,
-	email_address
-)
-values
-(
-	'160002',
-	'Rafael',
-	'Aurelio',
-	'Pascual',
-	'rafael.pascual@chrsglobal.com'
-);
+-- insert into accounts
+-- (
+-- 	employee_id,
+-- 	password
+-- )
+-- values
+-- (
+-- 	'070001',
+-- 	md5('user123456')
+-- );
 
-insert into employees 
-(
-	employee_id,
-	first_name,
-	middle_name,
-	last_name,
-	email_address
-)
-values
-(
-	'160001',
-	'Eliza',
-	'',
-	'Mandique',
-	'eliza.mandique@chrsglobal.com'
-);
+-- insert into accounts
+-- (
+-- 	employee_id,
+-- 	password
+-- )
+-- values
+-- (
+-- 	'160002',
+-- 	md5('iloveyou')
+-- );
 
-insert into accounts
-(
-	employee_id,
-	password
-)
-values
-(
-	'070001',
-	md5('user123456')
-);
-
-insert into accounts
-(
-	employee_id,
-	password
-)
-values
-(
-	'160002',
-	md5('iloveyou')
-);
-
-insert into accounts
-(
-	employee_id,
-	password
-)
-values
-(
-	'160001',
-	md5('user123456')
-);
+-- insert into accounts
+-- (
+-- 	employee_id,
+-- 	password
+-- )
+-- values
+-- (
+-- 	'160001',
+-- 	md5('user123456')
+-- );
 
 create index first_name_idx on employees(first_name);
 create index middle_name_idx on employees(middle_name);

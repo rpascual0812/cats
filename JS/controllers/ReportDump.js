@@ -3,13 +3,17 @@ app.controller('ReportDump', function(
                                         EmployeesFactory,
                                         SessionFactory,
                                         ReportsFactory,
-                                        md5
+                                        StatusesFactory,
+                                        md5,
+                                        $timeout
                                     ){
 
 
     $scope.profile = {};
     $scope.filter = {};
     $scope.filter.datetype = "Date Submitted";
+
+    $scope.data = {};
 
     $scope.dumpdata = {};
 
@@ -26,7 +30,8 @@ app.controller('ReportDump', function(
             $scope.pk = data.data[_id];
 
             //get_profile();
-            DEFAULTDATES();
+            getstatuses();
+            
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -41,6 +46,37 @@ app.controller('ReportDump', function(
         var promise = EmployeesFactory.profile(filters);
         promise.then(function(data){
             $scope.profile = data.data.result[0];
+        })   
+    }
+
+    function getstatuses(){
+        var filters = {
+                        'archived':'false'
+                    };
+
+        var promise = StatusesFactory.fetch(filters);
+        promise.then(function(data){
+            var a = data.data.result;
+            $scope.data.statuses = [];
+
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].status == 'For Processing'){
+                    ticked = true;
+                }
+
+                $scope.data.statuses.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].status,
+                                            ticked: ticked
+                                        });
+            }
+
+            $timeout(function() {
+                DEFAULTDATES();    
+            }, 1000);
+            
         })   
     }
 
@@ -92,19 +128,15 @@ app.controller('ReportDump', function(
 
 	function DUMP(){
         $scope.dumpdata = {};
+        
+        $scope.filter['new_status'] = $scope.filter.status[0].pk;
+        
 		var promise = ReportsFactory.getdump($scope.filter);
         promise.then(function(data){
-        	$scope.dumpdata = data.data.result;
-
-            setTimeout(function(){
-                $('#datatables-example').DataTable();
-            }, 500);
-            
+        	$scope.dumpdata = data.data.result;  
         })
         .then(null, function(data){
-            setTimeout(function(){
-                $('#datatables-example').DataTable();
-            }, 500);
+            
         })
 	}
 

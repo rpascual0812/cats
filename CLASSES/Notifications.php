@@ -2,8 +2,11 @@
 require_once('../../CLASSES/ClassParent.php');
 class Notifications extends ClassParent {
 
+    var $pk = NULL;
     var $employees_pk = NULL;
     var $notification = NULL;
+    var $type = NULL;
+    var $table_pk = NULL;
     var $date_created = NULL;
     var $read = NULL;
 
@@ -23,23 +26,27 @@ class Notifications extends ClassParent {
         }
 
         if($this->notification){
-            $where .= " notification = '$this->notification'";
+            $where .= " and notification = '$this->notification'";
         }
 
         if($this->date_created){
-            $where .= " date_created = '$this->date_created'";
+            $where .= " and date_created = '$this->date_created'";
         }
 
-        if($this->read){
-            $where .= " read = $this->read";
-        }
+        // if($this->read){
+        //     $where .= " and read = '$this->read'";
+        // }
 
         $sql = <<<EOT
                 select
+                    pk,
                     employees_pk,
                     notification,
-                    date_created,
-                    read
+                    type,
+                    table_pk,
+                    date_created::timestamp(0) as date_created,
+                    case when read = false then 'online' else 'offline' end as status,
+                    (select applicant_id from applicants where pk = table_pk) as applicant_id
                 from notifications
                 where $where
                 order by date_created desc
@@ -47,6 +54,17 @@ class Notifications extends ClassParent {
 EOT;
 
         return ClassParent::get($sql);
+    }
+
+    public function update(){
+        $sql = <<<EOT
+                update notifications set
+                read = '$this->read'
+                where pk = $this->pk
+                ;
+EOT;
+
+        return ClassParent::update($sql);
     }
 }
 ?>

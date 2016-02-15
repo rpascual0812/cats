@@ -62,9 +62,9 @@ app.controller('Permission', function(
 
     function get_employees_permission(){
         var filter = {
-            employees_pk : $scope.search.pk
+            employees_pk : md5.createHash($scope.search.pk)
         }
-
+        
         var promise = EmployeesFactory.get_permissions(filter);
         promise.then(function(data){
             $scope.employees_permissions = data.data.result[0].permission.split('||');
@@ -101,7 +101,7 @@ app.controller('Permission', function(
         var filter = {
             employees_pk : $scope.search.pk,
             employee_id : $scope.search.employee_id,
-            employee : $scope.search.name,
+            employee : $scope.search.first_name + " " + $scope.search.last_name,
             permission : $scope.employees_permissions
         };
 

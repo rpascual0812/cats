@@ -1,35 +1,3 @@
-// app.directive('fileModel', ['$parse', function ($parse) {
-//     return {
-//         restrict: 'A',
-//         link: function(scope, element, attrs) {
-//             var model = $parse(attrs.fileModel);
-//             var modelSetter = model.assign;
-            
-//             element.bind('change', function(){
-//                 scope.$apply(function(){
-//                     modelSetter(scope, element[0].files[0]);
-//                 });
-//             });
-//         }
-//     };
-// }]);
-
-// app.service('fileUpload', ['$http', function ($http) {
-//     this.uploadFileToUrl = function(file, uploadUrl){
-//         var fd = new FormData();
-//         fd.append('file', file);
-//         $http.post(uploadUrl, fd, {
-//             transformRequest: angular.identity,
-//             headers: {'Content-Type': undefined}
-//         })
-//         .success(function(data){
-//             console.log(data);
-//         })
-//         .error(function(){
-//         });
-//     }
-// }]);
-
 app.controller('Tracker', function(
                                         $scope,
                                         ApplicantsFactory,
@@ -40,7 +8,6 @@ app.controller('Tracker', function(
                                         SessionFactory,
                                         $timeout,
                                         md5,
-                                        // fileUpload,
                                         Upload, $timeout,
                                         UINotification,
                                         ngDialog
@@ -58,7 +25,8 @@ app.controller('Tracker', function(
         middle_name: '',
         profiled_for: '',
         source: '',
-        talent_acquisition: ''
+        talent_acquisition: '',
+        tags : []
     };
 
     $scope.cv = null;
@@ -100,6 +68,8 @@ app.controller('Tracker', function(
             getjobpositions();
             getclients();
             getTA();
+
+
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -244,15 +214,41 @@ app.controller('Tracker', function(
     function submit_applicant(){
         $scope.form.created_by = $scope.profile.pk;
 
-        $scope.form.source = $scope.form.source[0].pk;
-        $scope.form.profiled_for = $scope.form.profiled_for[0].pk;
-        $scope.form.client = $scope.form.client[0].pk;
-        $scope.form.talent_acquisition = $scope.form.talent_acquisition[0].pk;
+        if($scope.form.source[0]){
+            $scope.form.source = $scope.form.source[0].pk;
+        }
+
+        if($scope.form.profiled_for[0]){
+            $scope.form.profiled_for = $scope.form.profiled_for[0].pk;    
+        }
+        
+        if($scope.form.client[0]){
+            $scope.form.client = $scope.form.client[0].pk;    
+        }
+        
+        if($scope.form.talent_acquisition[0]){
+            $scope.form.talent_acquisition = $scope.form.talent_acquisition[0].pk;
+        }
 
         $scope.form.cv = $scope.cv;
         var error=0;
         for(var i in $scope.form){
-            if($scope.form[i].replace(/\s/g,'') == ""){
+            if(i == "cv"){
+                //skip, not required
+            }
+            else if(i == "tags"){
+                var new_tags=[];
+                for(var j in $scope.form[i]){
+                    new_tags.push($scope.form[i][j].name);
+                }
+
+                $scope.form['new_tags'] = new_tags.join(',');
+            }
+            else if(typeof($scope.form[i]) == 'object' && $scope.form[i].length == 0){
+                $scope.formerror[i] = 'formerror';
+                error++;
+            }
+            else if($scope.form[i].replace(/\s/g,'') == ""){
                 $scope.formerror[i] = 'formerror';
                 error++;
             }
@@ -299,34 +295,57 @@ app.controller('Tracker', function(
         }
     }
 
-    // $scope.uploadFile = function(){
-    //     var file = $scope.myFile;
-        
-    //     var uploadUrl = "./FUNCTIONS/Tracker/upload.php";
-    //     fileUpload.uploadFileToUrl(file, uploadUrl);
-
-    //     if(fileUpload){
-    //         console.log(upload_return);
-    //     }        
-    // };
-
     $scope.reset = function(){
-        $scope.form = {};
-        $scope.data = {};
+        $scope.form = {
+            birthdate: '',
+            client: '',
+            contact_number: '',
+            created_by: '',
+            date_received: '',
+            email_address: '',
+            first_name: '',
+            last_name: '',
+            middle_name: '',
+            profiled_for: '',
+            source: '',
+            talent_acquisition: '',
+            tags : []
+        };
 
-        $scope.pk = null;
-        $scope.profile = {};
+        $scope.cv = null;
 
-        $scope.details = {};
-        $scope.details.otheroptions = false;
+        $scope.formerror = {
+            birthdate: '',
+            client: '',
+            contact_number: '',
+            created_by: '',
+            date_received: '',
+            email_address: '',
+            first_name: '',
+            last_name: '',
+            middle_name: '',
+            profiled_for: '',
+            source: '',
+            talent_acquisition: ''
+        };
 
-        $(".select2-selection__rendered").empty();
+        for(var i in $scope.data.sources){
+            $scope.data.sources[i].ticked = false;
+        }
 
-        getsourcers();
-        getjobpositions();
-        getclients();
-        getTA();
+        for(var i in $scope.data.jobpositions){
+            $scope.data.jobpositions[i].ticked = false;
+        }
 
+        for(var i in $scope.data.clients){
+            $scope.data.clients[i].ticked = false;
+        }
+
+        for(var i in $scope.data.talent_acquisitions){
+            $scope.data.talent_acquisitions[i].ticked = false;
+        }
+
+        $scope.picFile = null;
     }
 
     $scope.uploadPic = function(file) {
@@ -343,24 +362,5 @@ app.controller('Tracker', function(
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             //console.log('progress: ' + progressPercentage + '% ');
         });
-
-
-        // file.upload = Upload.upload({
-        //     url: "./FUNCTIONS/Tracker/upload.php",
-        //     data: {file: file, username: $scope.username},
-        // });
-
-        // file.upload.then(function (response) {
-        //     $timeout(function () {
-        //         file.result = response.data;
-        //         console.log(response.data);
-        //     });
-        // }, function (response) {
-        //     if (response.status > 0)
-        //         $scope.errorMsg = response.status + ': ' + response.data;
-        // }, function (evt) {
-        //     // Math.min is to fix IE which reports 200% sometimes
-        //     file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-        // });
     }
 });

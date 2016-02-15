@@ -1,3 +1,5 @@
+-- sudo apt-get install postgresql-contrib-9.4 postgresql-plpython-9.4
+
 CREATE or REPLACE FUNCTION insertlogs()
     RETURNS trigger
 AS $insertlogs$
@@ -72,6 +74,18 @@ def generatecomment(colname, colordinal):
                 comment = str(coldesc[0].get('col_description')) + ' was changed from ' + str(oldval) + ' to ' + str(newval)
             else:
                 pass
+
+        elif colname == 'cv':
+            if TD['old']['cv'] <> TD['new']['cv']:
+                #a = strip_tags('<a ng-click="download_cv("'+ str(TD['old']['cv']) +'")" >Old</a>')
+                #b = strip_tags('<a ng-click="download_cv("'+ str(TD['new']['cv']) +'")" >New</a>')
+                a = '"' + str(TD["old"]["cv"]) + '"'
+                b = '"' + str(TD["new"]["cv"]) + '"'
+                c = "<a ng-click='download_cv("+ a +")'>Old</a>"
+                d = "<a ng-click='download_cv("+ b +")'>New</a>"
+                comment = str(coldesc[0].get('col_description')) + ' was changed from '+ c +' to '+ d
+            else:
+                pass
         
     ##END APPLICANTS TABLE
 
@@ -95,6 +109,7 @@ def generatecomment(colname, colordinal):
             else:
                 pass
 
+        #If the column is pure text, it should fall here.
         elif TD['old'][colname] != TD['new'][colname]:
             if TD['old'][colname] <> TD['new'][colname]:
                 comment = str(coldesc[0].get('col_description')) + ' was changed from ' + str(TD['old'][colname]) + ' to ' + str(TD['new'][colname])
@@ -105,6 +120,11 @@ def generatecomment(colname, colordinal):
         return comment
     else:
         pass
+
+#def strip_tags(html):
+
+    #SELECT regexp_replace(regexp_replace($1, E'(?x)<[^>]*?(\s alt \s* = \s* ([\'"]) ([^>]*?) \2) [^>]*? >', E'\3'), E'(?x)(< [^>]*? >)', '', 'g')
+    #return plpy.execute("SELECT regexp_replace(regexp_replace("+html+", E'(?x)<[^>]*?(\s alt \s* = \s* ([\'\"]) ([^>]*?) \2) [^>]*? >', E'\3'), E'(?x)(< [^>]*? >)', '', 'g')")
 
 tablename = TD['table_name']
 tablecols = plpy.execute("SELECT attname, attnum from pg_attribute where attrelid = (select distinct(tableoid) from "+ tablename +") and attnum > 0 and attisdropped = 'f'")
@@ -117,7 +137,8 @@ for i in tablecols:
 
 if systemcomment:
     systemcomment = '\n'.join(systemcomment)
-    if tablename == 'applicants':
-        plpy.execute("insert into applicant_logs(applicants_pk,details,created_by) values ("+ str(TD['old']['pk']) +", $$"+ str(systemcomment) + "$$, $$0$$);")
+
+    if tablename in ['applicants','applicants_tags']:
+        plpy.execute("insert into applicants_logs(applicants_pk,type,details,created_by) values ("+ str(TD['old']['pk']) +", $$Logs$$, $$"+ str(systemcomment) + "$$, $$0$$);")
 
 $insertlogs$ LANGUAGE plpythonu;

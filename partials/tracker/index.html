@@ -1,20 +1,3 @@
-<style type="text/css">
-.fileupload input {
-    width: 100%;
-    height: 32px;
-    border: solid 1px #CCC;
-}
-
-.fileupload .left {
-    width: 80%;
-    float: left;
-}
-
-.fileupload .right {
-    width: 20%;
-    float: left;
-}
-</style>
 <!-- start: Content -->
 <div id="content">
     <div class="panel box-shadow-none content-header">
@@ -151,6 +134,7 @@
                                         <span ng-show="picFile.result">Upload Successful</span>
                                         <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
                                     </div>
+                                </div>
                                     <!-- </fieldset>
                                     <br>
                                 </form> -->
@@ -172,6 +156,7 @@
                                         tick-property="ticked"
                                         selection-mode="single"
                                         style="width:295px;"
+                                        ng-class="formerror.source"
                                         max-height="200px"
                                     >
                                     </div>
@@ -194,6 +179,7 @@
                                         tick-property="ticked"
                                         selection-mode="single"
                                         style="width:295px;"
+                                        ng-class="formerror.source"
                                         max-height="200px"
                                     >
                                     </div>
@@ -216,14 +202,26 @@
                                         tick-property="ticked"
                                         selection-mode="single"
                                         style="width:295px;"
+                                        ng-class="formerror.source"
                                         max-height="200px"
                                     >
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-md-2">Tags</td>
+                            <td class="col-md-10">
+                                <tags-input ng-model="form.tags" 
+                                            display-property="name" 
+                                            placeholder="Add a tag" 
+                                            template="my-custom-template">
+                                </tags-input>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
+            
         </div>
         <div class="panel-body">
             <div class="col-md-5">
@@ -235,13 +233,17 @@
             </div>
         </div>
     </div>
+
+    
 </div>
+
 <!-- end: content -->
 
 <script type="text/javascript">
     $(document).ready(function(){
         //$('.datetime').bootstrapMaterialDatePicker({ format : 'dddd DD MMMM YYYY - HH:mm',animation:true});
         $('#form_date_received').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+        $('.dtp-close').hide();
 
         $('.mask-placeholder').mask("0000-00-00", {placeholder: "YYYY-MM-DD"});
         $('.mask-phone').mask('0000-000-0000');
@@ -284,5 +286,18 @@
     <div class="ngdialog-buttons">
         <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
         <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="my-custom-template">
+    <div class="tag-template">
+        <div>
+            <div style="float:left;">
+                <span>{{$getDisplayText()}}</span>
+            </div>
+            <div style="float:left; padding-top: 3px;">
+                <a class="remove-button" ng-click="$removeTag()">&#10006;</a>
+            </div>
+        </div>
     </div>
 </script>

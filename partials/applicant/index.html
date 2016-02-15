@@ -1,3 +1,9 @@
+<style type="text/css">
+.div-remarks a {
+    cursor: pointer;
+}
+</style>
+
 <!-- start: Content -->
 <div id="content">
     <div class="col-md-12" style="padding:20px;">
@@ -19,11 +25,11 @@
                             </button>
                         </a>
 
-                        <a>
+                        <!-- <a>
                             <button class=" btn btn-circle btn-outline btn-danger" value="primary" data-toggle="tooltip" data-placement="top" title="DELETE">
                                 <span class="fa fa-trash"></span>
                             </button>
-                        </a>
+                        </a> -->
 
                         
                         <!-- <button class=" btn btn-circle btn-outline btn-primary" value="primary" data-toggle="tooltip" data-placement="top" title="UPDATE STATUS" ng-click="update_status()">
@@ -38,6 +44,16 @@
                     <div class="panel-body">
                         <table class="table table-striped table-bordered" style="width:100%;">
                             <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                        <textarea ng-model="post" cols="50" rows="5" class="form-control ng-pristine ng-touched input-boxes ng-invalid ng-invalid-required ng-valid-maxlength" placeholder="Enter you remarks here"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align:right;">
+                                        <input type="button" class="btn btn-sm btn-primary" value="Save Remarks" ng-click="save_remarks()" ng-disabled="!post">
+                                    </td>
+                                </tr>
                                 <tr class="edit-form" style="color:#2196f3;">
                                     <td class="col-md-3" style="font-weight:bold;">Applicant ID</td>
                                     <td class="col-md-5">
@@ -55,9 +71,18 @@
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
                                         <span ng-show="display.profiled_for.input">
-                                            <select id="form_profiled_for" data-ng-model="form.profiled_for_id" style="width:350px;">
-                                                <option ng-repeat="(k, v) in data.jobpositions" value="{{v.pk}}">{{ v.position }}</option>
-                                            </select>
+                                            <div
+                                                isteven-multi-select
+                                                input-model="data.jobpositions"
+                                                output-model="form.profiled_for"
+                                                button-label="icon name"
+                                                item-label="icon name maker"
+                                                tick-property="ticked"
+                                                selection-mode="single"
+                                                style="width:295px; float:left;"
+                                                max-height="200px"
+                                            >
+                                            </div>
 
                                             <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
 
@@ -74,10 +99,18 @@
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('client')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
                                         <span ng-show="display.client.input">
-                                            <!-- <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.client" /> -->
-                                            <select id="form_client" class="form-control ng-pristine ng-valid ng-touched input-boxes" data-ng-model="form.client_id" style="width:350px;">
-                                                <option ng-repeat="(k, v) in data.clients" value="{{v.pk}}">{{ v.client }}</option>
-                                            </select>
+                                            <div
+                                                isteven-multi-select
+                                                input-model="data.clients"
+                                                output-model="form.client"
+                                                button-label="icon name"
+                                                item-label="icon name maker"
+                                                tick-property="ticked"
+                                                selection-mode="single"
+                                                style="width:295px; float:left;"
+                                                max-height="200px"
+                                            >
+                                            </div>
 
                                             <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('client')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
 
@@ -88,23 +121,44 @@
                                 <tr class="edit-form">
                                     <td class="col-md-3">Status</td>
                                     <td class="col-md-5">
-                                        <span ng-show="display.status.text">
-                                            {{applicant.status}}
-
-                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('status')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
-                                        </span>
-                                        <span ng-show="display.status.input">
-                                            <!-- <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.status" /> -->
-                                            <select id="form_status" class="form-control ng-pristine ng-valid ng-touched input-boxes" data-ng-model="form.status_id" style="width:350px;">
-                                                <option ng-repeat="(k, v) in data.statuses" value="{{v.pk}}">{{ v.status }}</option>
-                                            </select>
-
-                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('status')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
-
+                                        <span ng-if="restriction.status.edit">
+                                            <div
+                                                isteven-multi-select
+                                                input-model="data.statuses"
+                                                output-model="form.status"
+                                                button-label="icon name"
+                                                item-label="icon name maker"
+                                                tick-property="ticked"
+                                                selection-mode="single"
+                                                style="width:295px; float:left;"
+                                                max-height="200px"
+                                            >
+                                            </div>
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="update_status('status')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
                                             <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('status')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                        <span ng-if="restriction.status.text">
+                                            {{form.status}}
                                         </span>
                                     </td>
                                 </tr>
+                                <tr class="edit-form" ng-if="restriction.endorsement_date.edit">
+                                    <td class="col-md-3">Date of Endorsement</td>
+                                    <td class="col-md-5" colspan="2">
+                                        <input id="form_date_endorsed" type="text" maxlength="50" class="form-text" data-ng-model="form.date_endorsed" ng-change="clearerror('date_endorsed')" style="width:100px;" required/>
+                                        <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('date_endorsed')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+                                        <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('date_endorsed')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form" ng-if="restriction.appointment_date.edit">
+                                    <td class="col-md-3">Date of Appointment</td>
+                                    <td class="col-md-5" colspan="2">
+                                        <input id="form_date_appointment" type="text" maxlength="50" class="form-text" data-ng-model="form.date_appointment" ng-change="clearerror('date_appointment')" style="width:100px;" required/>
+                                        <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('date_appointment')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+                                        <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('date_appointment')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                    </td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -141,9 +195,21 @@
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('source')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
                                         <span ng-show="display.source.input">
-                                            <select id="form_source" data-ng-model="form.source_id" data-ng-change="sources_changed()" style="width:350px;">
+                                            <!-- <select id="form_source" data-ng-model="form.source_id" data-ng-change="sources_changed()" style="width:350px;">
                                                 <option ng-repeat="(k, v) in data.sources" value="{{v.pk}}">{{ v.source }}</option>
-                                            </select>
+                                            </select> -->
+                                            <div
+                                                isteven-multi-select
+                                                input-model="data.sources"
+                                                output-model="form.source"
+                                                button-label="icon name"
+                                                item-label="icon name maker"
+                                                tick-property="ticked"
+                                                selection-mode="single"
+                                                style="width:295px; float:left;"
+                                                max-height="200px"
+                                            >
+                                            </div>
 
                                             <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('source')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
 
@@ -155,7 +221,7 @@
                                     <td class="col-md-3">Candidate Name</td>
                                     <td class="col-md-5">
                                         <span ng-show="display.name.text">
-                                            {{applicant.last_name}}, {{applicant.first_name}} {{applicant.middle_name}}
+                                            {{applicant.first_name}} {{applicant.middle_name}} {{applicant.last_name}}
 
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('name')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
@@ -236,19 +302,72 @@
                                     <td class="col-md-3">CV</td>
                                     <td class="col-md-5">
                                         <span ng-show="display.cv.text">
-                                            {{applicant.cv}}
+                                            <a ng-click="download_cv(applicant.cv)" style="cursor:pointer;">Download</a>
 
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('cv')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
                                         <span ng-show="display.cv.input">
-                                            <input id="formedit_datereceived" style="width:160px;" type="text" maxlength="50" data-ng-model="form.cv" />
+                                            <div class="fileupload">
+                                                <div class="left" style="width:300px;">
+                                                    <input type="file" 
+                                                        ngf-select 
+                                                        ng-model="picFile" 
+                                                        name="file"
+                                                        ngf-pattern="'.pdf,.jpg,.doc,.docx,.odt'"
+                                                        ngf-max-size="10MB" 
+                                                        required
+                                                        ngf-model-invalid="errorFiles"
+                                                    >
+                                                    <i ng-show="myForm.file.$error.maxSize">File too large 
+                                                        {{errorFiles[0].size / 1000000|number:1}}MB: max 10M</i>
+                                                    
+                                                </div>
+                                                <div class="right">
+                                                    <input type="button" class="btn btn-info" value="UPLOAD" ng-click="uploadPic(picFile)" />
+                                                    <span ng-show="picFile.result">Upload Successful</span>
+                                                    <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                                                </div>
 
-                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('cv')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
-
-                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('cv')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                                <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('cv')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                            </div>
                                         </span>
                                     </td>
                                 </tr>
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Talent Acquisition</td>
+                                    <td class="col-md-5">
+                                        <span ng-show="display.talent_acquisition.text">
+                                            {{applicant.talent_acquisition}}
+
+                                            <span ng-if="restriction.talent_acquisition.edit">
+                                                <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                            </span>
+                                        </span>
+                                        <span ng-show="display.talent_acquisition.input">
+                                            <div
+                                                isteven-multi-select
+                                                input-model="data.talent_acquisitions"
+                                                output-model="form.talent_acquisition"
+                                                button-label="icon name"
+                                                item-label="icon name maker"
+                                                tick-property="ticked"
+                                                selection-mode="single"
+                                                style="width:295px; float:left;"
+                                                max-height="200px"
+                                            >
+                                            </div>
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('talent_acquisition')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="2">
+                                        <h3>Remarks</h3>
+                                    </td>
+                                </tr> -->
+                                
                                 
                                 <!-- <tr class="edit-form">
                                     <td class="col-md-3">Talent Acquisition</td>
@@ -273,17 +392,18 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- <div style="width: 100%; height: 300px;"></div> -->
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 div-remarks">
                 <div class="panel">
                     <div class="panel-body">
-                        <h3 style="margin-top:-5px;">Remarks:</h3>
+                        <h3 style="margin-top:-5px;">Logs:</h3>
                         <table class="table table-striped table-bordered" style="width:100%;">
                             <tr ng-repeat="(k,v) in remarks">
                                 <td>
                                     <div>
-                                        {{v.remarks}}
+                                        {{v.details}}
                                     </div>
                                     <div style="color:#2196f3; font-size:10px; margin-top:5px;">
                                         {{v.name}} {{v.date_created}}
@@ -301,46 +421,16 @@
 </div>
 <!-- end: content -->
 
-<script type="text/ng-template" id="update_status_modal">
-    <div class="ngdialog-message" style="width: 500px;">
-        <div style="margin-top: -15px;">
-            <h3><span style="color:#0c79be;"> {{ modal.title }}</span></h3>
-            
-        </div>
-        <div>
-            <table style="width: 85%;">
-                <thead>
-                    <tr>
-                        <td>
-                            Status : 
-                        </td>
-                        <td>
-                            <select></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Remarks : 
-                        </td>
-                        <td>
-                            <textarea></textarea>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <div class="ngdialog-buttons">
-        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">Close</button>
-        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">Save</button>
-    </div>
-</script>
-
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#summernote').summernote({
+            height:400
+        });
         
         $('#form_date_received').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
-        
+        $('#form_date_endorsed').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD', time : false, animation:true });
+        $('#form_date_appointment').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD', time : false, animation:true });
+        $('.dtp-close').hide();
 
         $('.mask-placeholder').mask("0000-00-00", {placeholder: "YYYY-MM-DD"});
         $('.mask-phone').mask('0000-000-0000');

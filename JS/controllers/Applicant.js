@@ -8,6 +8,7 @@ app.controller('Applicant', function(
                                         JobsFactory,
                                         ClientsFactory,
                                         StatusesFactory,
+                                        Upload, $timeout,
                                         md5,
                                         ngDialog
                                     ){
@@ -17,11 +18,34 @@ app.controller('Applicant', function(
     $scope.modal = {};
     $scope.modal.data = {};
 
+    $scope.cv = null;
+    $scope.post = '';
+
     $scope.remarks = {};
 
     $scope.profile = {};
     $scope.applicant = {};
     $scope.showmodal = false;
+
+    $scope.restriction = {
+        status : {
+            edit : false,
+            text : true
+        },
+        endorsement_date : {
+            edit : false,
+            text : true
+        },
+        appointment_date : {
+            edit : false,
+            text : true
+        },
+        talent_acquisition : {
+            edit : false,
+            text : true
+        }
+    };
+
 
     $scope.label = {
         date_received : "Date Received",
@@ -38,11 +62,21 @@ app.controller('Applicant', function(
         talent_acquisition_id : "Talent Acquisition",
         talent_acquisition : "Talent Acquisition",
         status_id : "Status",
-        status : "Status"
+        status : "Status",
+        date_endorsed : "Date of Endorsement",
+        date_appointment : "Date of Appointment"
     };
 
     $scope.display = {
         date_received : {
+            text : true,
+            input : false
+        },
+        date_endorsed : {
+            text : true,
+            input : false
+        },
+        date_appointment : {
             text : true,
             input : false
         },
@@ -96,13 +130,7 @@ app.controller('Applicant', function(
             var _id = md5.createHash('pk');
             $scope.pk = data.data[_id];
 
-            get_profile();
-            getsourcers();
-            getjobpositions();
-            getclients();
-            getTA();
-            getstatuses();
-            
+            get_applicant_details();
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -117,7 +145,89 @@ app.controller('Applicant', function(
         var promise = EmployeesFactory.profile(filters);
         promise.then(function(data){
             $scope.profile = data.data.result[0];
+            activate_restrictions();
         })   
+    }
+
+    function activate_restrictions() {
+
+        var assoc = ['Associate', 'Intern'];
+        var sup = ['Specialist', 'Supervisor'];
+        var manager = ['Asst Manager', 'Manager'];
+        var exec = ['C-Level'];
+
+        if(contains(assoc, $scope.profile.level)){
+            $scope.restriction.status.edit = false;
+            $scope.restriction.status.text = true;
+
+            $scope.restriction.endorsement_date.edit = false;
+            $scope.restriction.endorsement_date.text = true;
+
+            $scope.restriction.appointment_date.edit = false;
+            $scope.restriction.appointment_date.text = true;
+
+            $scope.restriction.talent_acquisition.edit = false;
+            
+            if($scope.profile.position == 'Talent Acquisition Associate'){
+                $scope.restriction.status.edit = true;
+                $scope.restriction.status.text = false;
+
+                $scope.restriction.endorsement_date.edit = true;
+                $scope.restriction.endorsement_date.text = false;
+
+                $scope.restriction.appointment_date.edit = true;
+                $scope.restriction.appointment_date.text = false;                
+            }
+        }
+        else if(contains(sup, $scope.profile.level)){
+            $scope.restriction.status.edit = false;
+            $scope.restriction.status.text = true;
+
+            $scope.restriction.endorsement_date.edit = false;
+            $scope.restriction.endorsement_date.text = true;
+
+            $scope.restriction.appointment_date.edit = false;
+            $scope.restriction.appointment_date.text = true;
+
+            $scope.restriction.talent_acquisition.edit = false;
+        }
+        else if(contains(manager, $scope.profile.level)){
+            $scope.restriction.status.edit = true;
+            $scope.restriction.status.text = false;
+
+            $scope.restriction.endorsement_date.edit = true;
+            $scope.restriction.endorsement_date.text = false;
+
+            $scope.restriction.appointment_date.edit = true;
+            $scope.restriction.appointment_date.text = false;
+
+            $scope.restriction.talent_acquisition.edit = true;
+        }
+        else {
+            $scope.restriction.status.edit = true;
+            $scope.restriction.status.text = false;
+
+            $scope.restriction.endorsement_date.edit = true;
+            $scope.restriction.endorsement_date.text = false;
+
+            $scope.restriction.appointment_date.edit = true;
+            $scope.restriction.appointment_date.text = false;
+
+            $scope.restriction.talent_acquisition.edit = true;
+        }
+
+
+    }
+
+    function contains(a, obj) {
+        var i = a.length;
+        while (i--) {
+            if (a[i] === obj) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function get_applicant_details(){
@@ -128,9 +238,9 @@ app.controller('Applicant', function(
         var promise = ApplicantsFactory.applicant(filters);
         promise.then(function(data){
             $scope.applicant = data.data.result[0];
-
+            
             $scope.form.date_received = data.data.result[0].date_received +" "+ data.data.result[0].time_received;
-            $scope.form.source_id = data.data.result[0].source_id;
+            $scope.form.source_pk = data.data.result[0].source_pk;
             $scope.form.source = data.data.result[0].source;
             $scope.form.last_name = data.data.result[0].last_name;
             $scope.form.first_name = data.data.result[0].first_name;
@@ -139,13 +249,27 @@ app.controller('Applicant', function(
             $scope.form.contact_number = data.data.result[0].contact_number;
             $scope.form.email_address = data.data.result[0].email_address;
             $scope.form.cv = data.data.result[0].cv;
-            $scope.form.profiled_for_id = data.data.result[0].profiled_for_id;
+            $scope.form.profiled_for_pk = data.data.result[0].profiled_for_pk;
             $scope.form.profiled_for = data.data.result[0].profiled_for;
-            $scope.form.client_id = data.data.result[0].client_id;
+            $scope.form.client_pk = data.data.result[0].client_pk;
             $scope.form.client = data.data.result[0].client;
+            $scope.form.talent_acquisition_pk = data.data.result[0].talent_acquisition_pk;
             $scope.form.talent_acquisition = data.data.result[0].talent_acquisition;
+            $scope.form.status_pk = data.data.result[0].status_pk;
+            $scope.form.status = data.data.result[0].status;
+            $scope.form.date_endorsed = data.data.result[0].endorsement_date;
+            $scope.form.date_appointment = data.data.result[0].appointment_date;
 
-            get_applicant_remarks();
+            get_profile();
+            getsources();
+            getjobpositions();
+            getclients();
+            getTA();
+            getstatuses();
+            
+            //$timeout(function() {
+                get_applicant_remarks();
+            //}, 3000);
         })   
     }
 
@@ -165,6 +289,8 @@ app.controller('Applicant', function(
         $scope.display[col].input = true;
                 
         $('#formedit_datereceived').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+
+        $('.icon-close').hide();
     }
 
     $scope.cancel_edit = function(col){
@@ -181,20 +307,6 @@ app.controller('Applicant', function(
 
         $scope.display[col].text = true;
         $scope.display[col].input = false;
-
-        //get_applicant_details();
-        if(col == "profiled_for"){
-            col = "profiled_for_id";
-        }
-        else if(col == "client"){
-            col = "client_id";
-        }
-        else if(col == "status"){
-            col = "status_id";
-        }
-        else if(col == "source"){
-            col = "source_id";
-        }
 
         $scope.modal.title = "Updating " + $scope.label[col];
         $scope.modal.close = "Cancel";
@@ -246,12 +358,15 @@ app.controller('Applicant', function(
                         }
                     }
                     else if(col == "name"){
-                        txt = $scope.form['last_name'] +", "+ $scope.form['first_name'] +" "+ $scope.form['middle_name'];
+                        txt = $scope.form['first_name'] +" "+ $scope.form['last_name'];
+                    }
+                    else if(col == "talent_acquisition"){
+                        txt = $scope.form[col][0].name;
                     }
                     else {
                         txt = $scope.form[col];
                     }
-
+                    
                     nestedConfirmDialog = ngDialog.openConfirm({
                         template:
                                 '<p>Are you sure you want to update '+ $scope.label[col] +' to '+ txt +'</p>' +
@@ -272,38 +387,24 @@ app.controller('Applicant', function(
             get_applicant_details();
             //console.log('resolved:' + value);
         }, function(value){
-            // console.log(col);
-            // console.log($scope.form[col]);
-            // console.log($scope.modal.data);
-            // console.log('rejected:' + value);
-            var old_col;
-            if(col == "profiled_for_id"){
-                old_col = "profiled_for";
-            }
-            else if(col == "client_id"){
-                old_col = "client";
-            }
-            else if(col == "status_id"){
-                old_col = "status";
-            }
-            else if(col == "source_id"){
-                old_col = "source";
-            }
-
             var data = {};
 
-            if(col == "name"){
+            if(typeof($scope.form[col]) == 'object'){
+                data[col] = parseInt($scope.form[col][0].pk);
+            }
+            else if(col == "name"){
                 data['last_name'] = $scope.form['last_name'];
                 data['first_name'] = $scope.form['first_name'];
                 data['middle_name'] = $scope.form['middle_name'];
             }
             else {
-                data[old_col] = $scope.form[col];
+                data[col] = $scope.form[col];
             }
+
             data['remarks'] = $scope.modal.data.remarks;
             data['applicant_id'] = $routeParams.id;
             data['employees_pk'] = $scope.profile.pk;
-
+            
             var promise = ApplicantsFactory.update(data);
             promise.then(function(data){
                 get_applicant_details();
@@ -313,16 +414,30 @@ app.controller('Applicant', function(
         });
     }
 
-    function getsourcers(){
+    function getsources(){
         var filters = {
                         'archived':'false'
                     };
 
         var promise = SourcesFactory.fetch(filters);
         promise.then(function(data){
-            $scope.data.sources = data.data.result;
+            //$scope.data.sources = data.data.result;
+            var a = data.data.result;
+            $scope.data.sources = [];
 
-            get_applicant_details();
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].pk == $scope.form.source_pk){
+                    ticked = true;
+                }
+
+                $scope.data.sources.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].source,
+                                            ticked: ticked
+                                        });
+            }
         })
     }
 
@@ -333,7 +448,23 @@ app.controller('Applicant', function(
 
         var promise = JobsFactory.fetch(filters);
         promise.then(function(data){
-            $scope.data.jobpositions = data.data.result;
+            //$scope.data.jobpositions = data.data.result;
+            var a = data.data.result;
+            $scope.data.jobpositions = [];
+
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].pk == $scope.form.profiled_for_pk){
+                    ticked = true;
+                }
+
+                $scope.data.jobpositions.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].position,
+                                            ticked: ticked
+                                        });
+            }
         })
     }
 
@@ -344,7 +475,23 @@ app.controller('Applicant', function(
 
         var promise = ClientsFactory.fetch(filters);
         promise.then(function(data){
-            $scope.data.clients = data.data.result;
+            //$scope.data.clients = data.data.result;
+            var a = data.data.result;
+            $scope.data.clients = [];
+
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].pk == $scope.form.client_pk){
+                    ticked = true;
+                }
+
+                $scope.data.clients.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].client,
+                                            ticked: ticked
+                                        });
+            }
         })
     }
 
@@ -356,7 +503,23 @@ app.controller('Applicant', function(
 
         var promise = EmployeesFactory.fetch(filters);
         promise.then(function(data){
-            $scope.data.talent_acquisitions = data.data.result;
+            //$scope.data.talent_acquisitions = data.data.result;
+            var a = data.data.result;
+            $scope.data.talent_acquisitions = [];
+
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].pk == $scope.form.talent_acquisition_pk){
+                    ticked = true;
+                }
+
+                $scope.data.talent_acquisitions.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].first_name + " " + a[i].last_name,
+                                            ticked: ticked
+                                        });
+            }
         })
     }
 
@@ -367,25 +530,41 @@ app.controller('Applicant', function(
 
         var promise = StatusesFactory.fetch(filters);
         promise.then(function(data){
-            $scope.data.statuses = data.data.result;
+            var a = data.data.result;
+            $scope.data.statuses = [];
+
+            for(var i in a){
+                var ticked = false;
+                
+                if(a[i].pk == $scope.form.status_pk){
+                    ticked = true;
+                }
+
+                $scope.data.statuses.push({   
+                                            pk: a[i].pk,
+                                            name: a[i].status,
+                                            ticked: ticked
+                                        });
+            }
         })   
     }
 
-    $scope.update_status = function(){
-
-        modal();
+    $scope.download_cv = function(link){
+        window.open(link.substr(1));
     }
 
-    function modal(){
-        $scope.modal.title = "Update Status";
+    $scope.uploadPic = function(file) {
+        $scope.modal.title = "Uploading New CV";
+        $scope.modal.save = "Upload";
+        $scope.modal.close = "Cancel";
 
         ngDialog.openConfirm({
-            template: 'update_status_modal',
+            template: 'UpdateModal',
             className: 'ngdialog-theme-plain',
             preCloseCallback: function(value) {
                 var nestedConfirmDialog = ngDialog.openConfirm({
                     template:
-                            '<p>Are you sure you want to close the parent dialog?</p>' +
+                            '<p>Are you sure you want to upload this CV?</p>' +
                             '<div class="ngdialog-buttons">' +
                                 '<button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="closeThisDialog(0)">No' +
                                 '<button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="confirm(1)">Yes' +
@@ -400,11 +579,118 @@ app.controller('Applicant', function(
             showClose: false
         })
         .then(function(value){
-            console.log('resolved:' + value);
-            // Perform the save here
+            // do nothing
         }, function(value){
-            console.log('rejected:' + value);
+            //$scope.modal.data
+            Upload.upload({
+                url: "./FUNCTIONS/Tracker/upload.php",
+                data: { file: file, 'username': $scope.username }
+            }).then(function (resp) {
+                $scope.cv = resp.data.file;
+
+                //$scope.picFile.result = true;
+
+                update_cv();
+            }, function (resp) {
+                $scope.errorMsg = true;
+                //console.log('Error status: ' + resp.status);
+            }, function (evt) {
+                
+                //console.log('progress: ' + progressPercentage + '% ');
+            });
         });
     }
-});
 
+    function update_cv(){
+        var data = {
+            applicant_id : $scope.applicant.applicant_id,
+            cv : $scope.cv,
+            remarks : $scope.modal.data.remarks,
+            employees_pk : $scope.profile.pk
+        };
+        
+        if($scope.cv){
+            var promise = ApplicantsFactory.update_cv(data);
+            promise.then(function(data){
+                get_applicant_details();
+                get_applicant_remarks();
+
+                $scope.display['cv'].text = true;
+                $scope.display['cv'].input = false;
+            })
+        }
+    }
+
+    $scope.update_status = function(col){
+        $scope.modal.data = {
+            remarks : ''
+        }
+
+        $scope.modal.title = "Updating " + $scope.label[col];
+        $scope.modal.close = "Cancel";
+        $scope.modal.save = "Update";
+
+        ngDialog.openConfirm({
+            template: 'UpdateModal',
+            className: 'ngdialog-theme-plain',
+            preCloseCallback: function(value) {
+                var nestedConfirmDialog;
+
+                if($scope.modal.data.remarks.replace(/\s/g,'') == ''){
+                    nestedConfirmDialog = ngDialog.openConfirm({
+                        template:
+                                '<p>Please state your reason for this update</p>',
+                        plain: true,
+                        className: 'ngdialog-theme-plain'
+                    });
+                }
+                else {
+                    nestedConfirmDialog = ngDialog.openConfirm({
+                        template:
+                                '<p>Are you sure you want to update '+ $scope.label[col] +' to '+ $scope.form[col][0].name +'</p>' +
+                                '<div class="ngdialog-buttons">' +
+                                    '<button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="closeThisDialog(0)">No' +
+                                    '<button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="confirm(1)">Yes' +
+                                '</button></div>',
+                        plain: true,
+                        className: 'ngdialog-theme-plain'
+                    });
+                }
+                return nestedConfirmDialog;
+            },
+            scope: $scope,
+            showClose: false
+        })
+        .then(function(value){
+            //cancel
+        }, function(value){
+            //save
+            var data = {
+                applicant_id : $scope.applicant.applicant_id,
+                status : parseInt($scope.form[col][0].pk),
+                remarks : $scope.modal.data.remarks,
+                employees_pk : parseInt($scope.profile.pk)
+            };
+            
+            var promise = ApplicantsFactory.update(data);
+            promise.then(function(data){
+                get_applicant_details();
+                get_applicant_remarks();
+            })
+        });
+    }
+
+    $scope.save_remarks = function(){
+        var data = {
+            applicant_id : $scope.applicant.applicant_id,
+            post : $scope.post,
+            employees_pk : parseInt($scope.profile.pk)
+        };
+
+        var promise = ApplicantsFactory.update(data);
+        promise.then(function(data){
+            $scope.post = '';
+            get_applicant_remarks();
+        })
+    }
+});
