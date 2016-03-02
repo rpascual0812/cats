@@ -122,9 +122,9 @@
         <div class="col-md-12 nav-wrapper">
             <div class="navbar-header" style="width:100%;">
                 <div class="opener-left-menu is-open">
-                    <span class="is-image">
+                    <!-- <span class="is-image">
                         <img src="./ASSETS/img/logo_plain.png" style="height:46px;"/>
-                    </span>
+                    </span> -->
                     <span class="is-not-image">
                         <span class="top"></span>
                         <span class="middle"></span>
@@ -216,11 +216,22 @@
                         </ul>
                     </li> -->
                     
-                    <li class="ripple" ng-if="permissions['New Candidate Form']"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li>
-
-                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-table"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                    <!-- <li class="ripple" ng-if="permissions['New Candidate Form']"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li> -->
+                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-bullhorn"></span> Requisitions <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li ng-if="permissions['Candidates']"><a href="#/report/candidates">Candidates</a></li>
+                            <li ng-if="permissions['Candidates']"><a href="#/request/new">New</a></li>
+                            <li ng-if="permissions['Candidates']"><a href="#/request/list">List</a></li>
+                        </ul>
+                    </li>
+                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-group"></span> Candidates  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                        <ul class="nav nav-list tree">
+                            <li ng-if="permissions['Candidates']"><a href="#/candidate/new">New</a></li>
+                            <li ng-if="permissions['Candidates']"><a href="#/candidates/list">List</a></li>
+                        </ul>
+                    </li>
+                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-area-chart"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                        <ul class="nav nav-list tree">
+                            <li ng-if="permissions['Candidates']"><a href="#/candidate/new">Productivity</a></li>
                         </ul>
                     </li>
                     <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-cogs"></span> Admin  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
@@ -229,6 +240,7 @@
                             <li><a href="#/admin/clients">Clients</a></li>
                             <li><a href="#/admin/sources">Sources</a></li>
                             <li><a href="#/admin/profiles">Profiles</a></li>
+                            <li><a href="#/admin/groups">Groups</a></li>
                         </ul>
                     </li>
                     <li class="ripple"><a href="#/calendar"><span class="fa fa-calendar-o"></span>Calendar</a></li>
@@ -311,6 +323,10 @@
     <script src="./JS/controllers/Clients.js"></script>
     <script src="./JS/controllers/Sources.js"></script>
     <script src="./JS/controllers/Profiles.js"></script>
+    <script src="./JS/controllers/Groups.js"></script>
+    <script src="./JS/controllers/Request.js"></script>
+    <script src="./JS/controllers/Requisitions.js"></script>
+    <script src="./JS/controllers/RequisitionEdit.js"></script>
 
     <!-- FACTORIES -->
     <script src="./JS/factories/SessionFactory.js"></script>    
@@ -322,11 +338,13 @@
     <script src="./JS/factories/EmployeesFactory.js"></script>  
     <script src="./JS/factories/StatusesFactory.js"></script>
     <script src="./JS/factories/NotificationsFactory.js"></script>
-    <script src="./JS/factories/PermissionFactory.js"></script>
+    <script src="./JS/factories/AdminFactory.js"></script>
     <script src="./JS/factories/DashboardFactory.js"></script>
+    <script src="./JS/factories/RequestFactory.js"></script>
 
     <!-- DIRECTIVES -->
     <script src="./JS/directives/splash.js"></script>
+    <script src="./JS/directives/isNumber.js"></script>
 
     <!-- plugins -->
     <script src="./ASSETS/js/plugins/moment.min.js"></script>
@@ -339,6 +357,7 @@
     <script src="./ASSETS/js/plugins/dropdown/isteven-multi-select.js"></script>
     <script src="./ASSETS/js/plugins/upload/ng-file-upload.min.js"></script>
     <script src="./ASSETS/js/plugins/tags/ng-tags-input.js"></script>
+    <script src="./ASSETS/js/plugins/pagination/paging.js"></script>
 
     <script src="./ASSETS/js/plugins/dialog/ngDialog.js"></script>
     <script src="./ASSETS/js/plugins/bootstrap-material-datetimepicker.js"></script>

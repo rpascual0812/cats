@@ -50,6 +50,32 @@
 
             </div>
             <div class="col-md-12">
+                <h3>System Role</h3>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <td>
+                            <!-- <select>
+                                <option ng-repeat="(k,v) in roles" value="v.pk">{{v.role}}</option>
+                            </select> -->
+
+                            <div
+                                isteven-multi-select
+                                input-model="roles"
+                                output-model="employees_role"
+                                button-label="icon name"
+                                item-label="icon name maker"
+                                tick-property="ticked"
+                                selection-mode="single"
+                                style="width:295px;"
+                                ng-class="formerror.source"
+                                max-height="200px"
+                                is-disabled="(search.pk)?false:true"
+                            >
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div style="width:100%; height:30px;"></div>
                 <h3>Tracker</h3>
                 <table class="table table-striped table-bordered">
                     <tr>

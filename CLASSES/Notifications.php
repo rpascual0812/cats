@@ -22,7 +22,7 @@ class Notifications extends ClassParent {
     public function fetch(){
         $where="true";
         if($this->employees_pk){
-            $where .= " pk = $this->pk";
+            $where .= " and md5(employees_pk::text) = '$this->employees_pk'";
         }
 
         if($this->notification){

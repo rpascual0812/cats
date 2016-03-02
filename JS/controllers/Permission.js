@@ -2,7 +2,7 @@ app.controller('Permission', function(
                                         $scope,
                                         EmployeesFactory,
                                         SessionFactory,
-                                        PermissionFactory,
+                                        AdminFactory,
                                         UINotification,
                                         md5
                                     ){
@@ -16,6 +16,9 @@ app.controller('Permission', function(
 
     $scope.permissions = {};
     $scope.employees_permissions = [];
+
+    $scope.roles = [];
+    $scope.employees_role = null;
 
 	init();
 
@@ -46,6 +49,7 @@ app.controller('Permission', function(
             $scope.profile = data.data.result[0];
 
             get_permissions();
+            get_roles(0);
         })   
     }
 
@@ -54,9 +58,36 @@ app.controller('Permission', function(
             archived : 'false'
         }
 
-        var promise = PermissionFactory.fetch(filter);
+        var promise = AdminFactory.fetch(filter);
         promise.then(function(data){
             $scope.permissions = data.data.result;
+        })
+    }
+
+    function get_roles(pk){
+        var filter = {
+            archived : 'false'
+        }
+
+        var promise = EmployeesFactory.roles(filter);
+        promise.then(function(data){
+            //$scope.roles = data.data.result;
+
+            var a = data.data.result;
+            $scope.roles = [];
+
+            for(var i in a){
+                var ticked = false;
+                if(a[i].pk == pk){
+                    ticked = true;
+                }                    
+
+                $scope.roles.push({
+                                            pk: a[i].pk,
+                                            name: a[i].role,
+                                            ticked: ticked
+                                        });
+            }
         })
     }
 
@@ -64,10 +95,13 @@ app.controller('Permission', function(
         var filter = {
             employees_pk : md5.createHash($scope.search.pk)
         }
+
+        get_permissions();
         
         var promise = EmployeesFactory.get_permissions(filter);
         promise.then(function(data){
             $scope.employees_permissions = data.data.result[0].permission.split('||');
+            get_roles(data.data.result[0].role);
         })
     }
 
@@ -102,7 +136,8 @@ app.controller('Permission', function(
             employees_pk : $scope.search.pk,
             employee_id : $scope.search.employee_id,
             employee : $scope.search.first_name + " " + $scope.search.last_name,
-            permission : $scope.employees_permissions
+            permission : $scope.employees_permissions,
+            role : $scope.employees_role[0].pk
         };
 
         var promise = EmployeesFactory.save_permissions(filter);

@@ -73,6 +73,14 @@ alter table departments owner to chrs;
 create unique index code_unique_idx on departments (code);
 create unique index department_unique_idx on departments (department);
 
+create table groupings
+(
+	employees_pk int references employees(pk),
+	supervisor_pk int references employees(pk)
+);
+alter table groupings owner to chrs;
+create unique index groupings_unique_idx on groupings (employees_pk, supervisor_pk);
+
 -- insert into accounts
 -- (
 -- 	employee_id,

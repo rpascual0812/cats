@@ -6614,3 +6614,7 @@ ul li a:focus {
     width: 20%;
     float: left;
 }
+
+.warning-bg {
+  background-color: #f1f27a;
+}

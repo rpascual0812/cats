@@ -111,6 +111,7 @@ EOT;
                     employees_pk,
                     employee_id,
                     employee,
+                    role,
                     array_to_string(permission, '||') as permission
                 from employees_permission
                 where md5(employees_pk::text) = '$employees_pk'
@@ -134,13 +135,14 @@ EOT;
         $employee_id = $data['employee_id'];
         $employee = $data['employee'];
         $permission = "'{".$data['permission']."}'";
+        $role = $data['role'];
         
         if($p['status']){
             $sql = <<<EOT
                     update employees_permission set
-                    (permission)
+                    (role,permission)
                     =
-                    ($permission)
+                    ($role, $permission)
                     where employees_pk = '$employees_pk'
                     ;
 EOT;
@@ -153,6 +155,7 @@ EOT;
                         employees_pk,
                         employee_id,
                         employee,
+                        role,
                         permission
                     )
                     values
@@ -160,6 +163,7 @@ EOT;
                         $employees_pk,
                         '$employee_id',
                         '$employee',
+                        $role,
                         $permission
                     );
 EOT;
@@ -189,6 +193,25 @@ EOT;
                     first_name||' '||last_name ilike '$txt%' or
                     first_name||' '||middle_name||' '||last_name ilike '$txt%'
                 )
+                ;
+EOT;
+
+        return ClassParent::get($sql);
+    }
+
+    public function roles($data){
+        foreach($data as $k=>$v){
+            $data[$k] = pg_escape_string(trim(strip_tags($v)));
+        }
+
+        $archived = $data['archived'];
+        $sql = <<<EOT
+                select 
+                    pk,
+                    role
+                from roles
+                where archived = $archived
+                order by r_order
                 ;
 EOT;
 

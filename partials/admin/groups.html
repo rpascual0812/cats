@@ -1,0 +1,115 @@
+start: Content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Groups</h3>
+                <p class="animated fadeInDown">
+                    Administration <span class="fa-angle-right fa"></span> Groups
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <div class="col-md-12 tabs-area">
+                    <ul id="tabs-demo4" class="nav nav-tabs nav-tabs-v3" role="tablist">
+                        <li role="presentation" class="active">
+                            <a ng-click="switch_tab('talent_acquisition')" role="tab" data-toggle="tab" aria-expanded="true" style="cursor:pointer;">Sourcers</a>
+                        </li>
+                        <li role="presentation" class="">
+                            <a ng-click="switch_tab('other')" role="tab" data-toggle="tab" aria-expanded="false" style="cursor:pointer;">Other</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content tab-content-v3">
+                        <div ng-if="tab.talent_acquisition" role="tabpanel" class="tab-pane fade active in" style="padding-left: 5px; padding-top: 20px;">
+
+                            <h4>List of Sourcers</h4>
+
+                            <div class="col-sm-6" style="margin-bottom:20px;">
+                            
+                            </div>
+                            <div class="col-sm-3" style=" text-align:right;">
+                                <input aria-controls="dataTables-example" type="text" style="height: 30px; width:300px;" placeholder="Search..." ng-model="filter.search" ng-change="table_search_changed()"/>
+                            </div>
+                            <div class="col-sm-3">
+                                <select aria-controls="dataTables-example" class="form-control input-sm" ng-model="filter.talent_acquisition" ng-change="filter_by_talent_acquisition()">
+                                    <option value="All Talent Acquisitions">All Talent Acquisitions</option>
+                                    <option value="Not Yet Assigned">Not Yet Assigned</option>
+                                    <option ng-repeat="(k,v) in talent_acquisition.data" value="{{v.employees_pk}}">{{v.employee}}</option>
+                                    
+                                </select>
+                            </div>
+
+                            <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0" style="margin-top: 50px;">
+                                <thead>
+                                    <th>Sourcer</th>
+                                    <th>Talent Acquisition</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="(k, v) in sourcers.data" ng-if="sourcers.status">
+                                        <td>{{ v.employee }}</td>
+                                        <td style="width:305px;">
+                                            <select ng-model="sourcers.data[k].talent_acquisition" class="form-control input-sm" ng-change="talent_acquisition_changed(k)">
+                                                <option value="0">None selected</option>
+                                                <option ng-repeat="(a,b) in talent_acquisition.data" value="{{b.employees_pk}}">{{b.employee}}</option>
+                                                
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="!sourcers.status">
+                                        <td colspan="2" style="text-align:center;">
+                                            No records found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-if="tab.other" role="tabpanel" class="tab-pane fade active in">
+                            <div style="width: 100%; height:500px;">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/ng-template" id="GroupModal">
+    <div class="ngdialog-message" style="width: 100%;">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+        </div>
+        <div>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <td>
+                            <input type="text" placeholder="Search sourcers here" style="width: 100%;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table style="width:100%;">
+                                <tr ng-if="sourcers.status">
+                                    <td>Sourcer Name</td>
+                                    <td>Options</td>
+                                </tr>
+                                <tr ng-if="!sourcers.status">
+                                    <td colspan="2" style="text-align:center;">No data available</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="confirm(1)">{{modal.close}}</button>
+    </div>
+</script>

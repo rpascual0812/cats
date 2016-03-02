@@ -1,0 +1,145 @@
+<!-- start: Content -->
+<style type="text/css">
+.checkBoxContainer {
+    font-size: 13px !important;
+}
+</style>
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Requisitions</h3>
+                <p class="animated fadeInDown">
+                    Home <span class="fa-angle-right fa"></span> 
+                    Requisitions <span class="fa-angle-right fa"></span> List
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div style="padding-left: 20px;">
+                <h4>                    
+                    <div style="float:left; width: 250px;">
+                        Date From: <input ng-model="filter.datefrom" type="text" id="datefrom" style="width:120px;"/>
+                    </div>
+                    <div style="float:left; width: 200px;">
+                        Date To: <input ng-model="filter.dateto" type="text" id="dateto" style="width:120px;"/>
+                    </div>
+                    <div style="float:left; width: 300px; margin-left: 10px; margin-right: 10px;">
+                        <div
+                            isteven-multi-select
+                            input-model="data.jobpositions"
+                            output-model="filter.profile"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked"
+                            selection-mode="single"
+                            max-height="200px"
+                            max-width:"300px"
+                        >
+                        </div>
+                    </div>
+                    
+                    <div style="float:left; width: 300px;">
+                        <input type="button" class="btn btn-primary" value="SEARCH" ng-click="DUMP()" />
+                        <input type="button" class="btn btn-success" value="EXPORT" ng-click="EXPORT()" />
+                    </div>
+                </h4>
+            </div>
+            <div style="height:50px; width:100%;">
+
+            </div>
+            <div class="responsive-table">
+                <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Requisition #</th>
+                            <th>Date Submitted</th>
+                            <th>Profile</th>
+                            <th>Needed</th>
+                            <th>Being Processed</th>
+                            <th>Not Hired</th>
+                            <th>Hired</th>
+                            <th>Target End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(k, v) in requisitions.data" ng-click="EDIT(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
+                            <td>{{v.pk}}</td>
+                            <td>{{v.date_created}}</td>
+                            <td>{{v.profile}}</td>
+                            <td>{{v.needed}}</td>
+                            <td>{{v.processing}}</td>
+                            <td>{{v.nothired}}</td>
+                            <td>{{v.hired}}</td>
+                            <td>{{v.end_date}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#datefrom').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+        $('#dateto').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+
+        $('.dtp-close').hide();
+    });
+
+</script>
+
+<script type="text/ng-template" id="EditModal">
+    <div class="ngdialog-message">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+        </div>
+        <div>
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>Profile </td>
+                    <td>
+                        <div
+                            isteven-multi-select
+                            input-model="data.jobpositions"
+                            output-model="modal.profile"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked"
+                            selection-mode="single"
+                            max-height="200px"
+                            max-width:"300px"
+                        >
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>How many are needed? </td>
+                    <td>
+                        <input type="text" ng-model="modal.total" style="width: 50px;" maxlength="3"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Target End Date </td>
+                    <td>
+                        <input type="text" ng-model="modal.end_date" style="width: 140px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Remarks </td>
+                    <td>
+                        <textarea ng-model="modal.remarks" cols="50" rows="10"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+    </div>
+</script>

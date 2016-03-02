@@ -2,28 +2,16 @@
 require_once('../connect.php');
 require_once('../../CLASSES/Clients.php');
 
-$filters = array(
-					'pk' => NULL,
-					'code' => NULL,
-					'client' => NULL,
-					'archived' => NULL,
-				);
-
+$data=array();
 foreach($_POST as $k=>$v){
-	$filters[$k] = $v;
+	$data[$k] = $v;
 }
 
-$class = new Clients(
-						$filters['pk'],
-						$filters['code'],
-						$filters['client'],
-						$filters['archived']
-					);
+$class = new Clients($data);
+$data = $class->fetch($data);
 
-$data = $class->fetch();
-
-header("HTTP/1.0 404 User Not Found");
-if($data['status']){
+header("HTTP/1.0 500 Internal Server Error");
+if($data['status']==true){
 	header("HTTP/1.0 200 OK");
 }
 

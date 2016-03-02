@@ -7,7 +7,8 @@ var app = angular.module('onload', [
                                     'angucomplete-alt',
                                     'isteven-multi-select',
                                     'ngFileUpload',
-                                    'ngTagsInput'
+                                    'ngTagsInput',
+                                    'bw.paging'
                                 ]);
 
 app.config(function($routeProvider){
@@ -17,7 +18,7 @@ app.config(function($routeProvider){
         controller: 'Dashboard',
         templateUrl: 'partials/dashboard/index.html'
     })
-    .when('/tracker',
+    .when('/candidate/new',
     {
         controller: 'Tracker',
         templateUrl: 'partials/tracker/index.html'
@@ -27,10 +28,30 @@ app.config(function($routeProvider){
         controller: 'Applicant',
         templateUrl: 'partials/applicant/index.html'
     })
-    .when('/report/candidates',
+    .when('/candidates/list',
     {
         controller: 'ReportDump',
         templateUrl: 'partials/reports/dump.html'
+    })
+    .when('/request/create',
+    {
+        controller: 'Request',
+        templateUrl: 'partials/request/create.html'
+    })
+    .when('/request/new',
+    {
+        controller: 'Request',
+        templateUrl: 'partials/request/create.html'
+    })
+    .when('/request/list',
+    {
+        controller: 'Requisitions',
+        templateUrl: 'partials/request/list.html'
+    })
+    .when('/request/:id',
+    {
+        controller: 'RequisitionEdit',
+        templateUrl: 'partials/request/edit.html'
     })
     .when('/admin/permission',
     {
@@ -51,6 +72,11 @@ app.config(function($routeProvider){
     {
         controller: 'Profiles',
         templateUrl: 'partials/admin/profiles.html'
+    })
+    .when('/admin/groups',
+    {
+        controller: 'Groups',
+        templateUrl: 'partials/admin/groups.html'
     })
     .when('/calendar',
     {

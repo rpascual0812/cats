@@ -574,8 +574,27 @@ EOT;
                 from applicants
                 left join applicants_status on (applicants.pk = applicants_status.applicants_pk)
                 left join statuses on (applicants_status.status = statuses.pk)
-                where applicants.date_created between '$datenow'::timestamptz and '$datenow'::timestamptz + interval '1 month' - interval '1 millisecond'
+                where applicants_status.date_created between '$datenow'::timestamptz and '$datenow'::timestamptz + interval '1 month' - interval '1 millisecond'
                 $where
+                ;
+EOT;
+
+        return ClassParent::get($sql);
+    }
+
+    public function check_duplicate(){
+        $sql = <<<EOT
+                select
+                    applicant_id,
+                    first_name,
+                    middle_name,
+                    last_name,
+                    birthdate::date as birthdate
+                from applicants
+                where lower(first_name) = lower('$this->first_name')
+                and lower(middle_name) = lower('$this->middle_name')
+                and lower(last_name) = lower('$this->last_name')
+                and birthdate = '$this->birthdate'
                 ;
 EOT;
 

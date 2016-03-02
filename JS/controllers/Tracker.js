@@ -52,6 +52,9 @@ app.controller('Tracker', function(
     $scope.pk = null;
     $scope.profile = {};
 
+    $scope.duplicates = [];
+    $scope.warningbg = '';
+
     $scope.details = {};
     $scope.details.otheroptions = false;
 
@@ -362,5 +365,66 @@ app.controller('Tracker', function(
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             //console.log('progress: ' + progressPercentage + '% ');
         });
+    }
+
+    $scope.check_duplicates = function(){
+        var count=0;
+        if($scope.form.last_name.replace(/\s/g,'') == ''){
+            count++;
+        }
+        
+        if($scope.form.first_name.replace(/\s/g,'') == ''){
+            count++;
+        }
+        
+        if($scope.form.middle_name.replace(/\s/g,'') == ''){
+            count++;
+        }
+        
+        if($scope.form.birthdate.replace(/\s/g,'') == ''){
+            count++;
+        }
+        
+        if(count==0){
+            var filter = {
+                first_name : $scope.form.first_name,
+                middle_name : $scope.form.middle_name,
+                last_name : $scope.form.last_name,
+                birthdate : $scope.form.birthdate
+            };
+
+            var promise = ApplicantsFactory.check_duplicate(filter);
+            promise.then(function(data){
+                $scope.formerror = {
+                    first_name: 'warning-bg',
+                    last_name: 'warning-bg',
+                    middle_name: 'warning-bg'
+                };
+
+                $scope.duplicates = data.data.result;
+
+                var txt;
+                if($scope.duplicates.length > 1){
+                    txt = 'records';    
+                }
+                else{
+                    txt = 'record';
+                }
+                
+                UINotification.warning({
+                                    message: 'The system found ' + $scope.duplicates.length + ' existing '+ txt +' that matches this candidate',
+                                    title: 'WARNING', 
+                                    delay : 5000,
+                                    positionY: 'top', positionX: 'right'
+                                });
+            })
+            .then(null, function(data){
+                $scope.warningbg = '';
+            })
+        }
+    }
+
+    $scope.open_duplicate = function(k){
+        window.location = "#/candidate/" + $scope.duplicates[k].applicant_id;
     }
 });

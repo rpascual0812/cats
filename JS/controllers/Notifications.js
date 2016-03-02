@@ -21,7 +21,7 @@ app.controller('Notifications', function(
 
     function init(){
     	var promise = SessionFactory.getsession();
-        promise.then(function(data){            
+        promise.then(function(data){
             setTimeout(function(){
                 var _id = md5.createHash('pk');
                 $scope.pk = data.data[_id];
@@ -84,13 +84,18 @@ app.controller('Notifications', function(
     }
 
     function get_notifications(){
-        var promise = NotificationsFactory.fetch();
+        var filter = {
+            employees_pk : $scope.pk
+        };
+        var promise = NotificationsFactory.fetch(filter);
         promise.then(function(data){            
             $scope.notifications.data = data.data.result;
 
-            for(var i in data.data.result){
-                if(data.data.result[i].status == 'online'){
-                    changeDocumentTitle(data.data.result[i].notification, 0);    
+            if($scope.notifications.count > 1){
+                for(var i in data.data.result){
+                    if(data.data.result[i].status == 'online'){
+                        changeDocumentTitle(data.data.result[i].notification, 0);    
+                    }
                 }
             }
 

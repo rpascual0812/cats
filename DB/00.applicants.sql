@@ -1,21 +1,63 @@
+create table roles
+(
+	pk serial primary key not null,
+	role text not null,
+	r_order int not null,
+	archived boolean default false
+);
+alter table roles owner to cats;
+create unique index role_idx on roles (role);
+
+insert into roles
+(
+	role,
+	r_order
+)
+values
+(
+	'Administrator',
+	1
+),
+(
+	'Director',
+	2
+),
+(
+	'Manager',
+	3
+),
+(
+	'Team Leader',
+	4
+),
+(
+	'Talent Acquisition',
+	5
+),
+(
+	'Sourcer',
+	6
+);
+
 create table employees_permission
 (
 	employees_pk int not null,
 	employee_id text not null,
 	employee text not null,
+	role int references roles(pk),
 	permission text[] not null
 );
 alter table employees_permission owner to cats;
 create unique index employees_pk_idx on employees_permission (employees_pk);
 create unique index employees_id_idx on employees_permission (employee_id);
 
-create table employees_group
+create table talent_acquisition_group
 (
 	employees_pk int not null,
-	supervisor int not null
+	supervisor_pk int not null
 );
-alter table employees_group owner to cats;
-create unique index employees_idx on employees_group (employees_pk, supervisor);
+alter table talent_acquisition_group owner to cats;
+create unique index employees_idx on talent_acquisition_group (employees_pk, supervisor_pk);
 
 create table job_positions
 (
@@ -25,6 +67,8 @@ create table job_positions
 );
 alter table job_positions owner to cats;
 create unique index position_idx on job_positions (position);
+COMMENT ON COLUMN job_positions.position is 'PROFILE';
+COMMENT ON COLUMN job_positions.archived is 'STATUS';
 
 create table statuses
 (
@@ -44,6 +88,9 @@ create table clients
 );
 alter table clients owner to cats;
 create unique index client_idx on clients (code,client);
+COMMENT ON COLUMN clients.code is 'CODE';
+COMMENT ON COLUMN clients.client is 'CLIENT';
+COMMENT ON COLUMN clients.archived is 'STATUS';
 
 create table sources
 (
@@ -53,6 +100,7 @@ create table sources
 );
 alter table sources owner to cats;
 create unique index source_idx on sources (source);
+COMMENT ON COLUMN sources.source is 'SOURCE';
 
 create table applicants
 (
@@ -160,14 +208,77 @@ create table notifications
 );
 alter table notifications owner to cats;
 
-create table permissions
+-- create table permissions
+-- (
+-- 	pk serial primary key not null,
+-- 	role text not null,
+-- 	parent text not null,
+-- 	item text not null,
+-- 	archived boolean default false
+-- );
+-- alter table permissions owner to cats;
+
+create table job_positions_logs
 (
-	pk serial primary key not null,
-	parent text not null,
-	item text not null,
+	position_pk int references job_positions(pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table job_positions_logs owner to cats;
+
+create table clients_logs
+(
+	client_pk int references clients(pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table clients_logs owner to cats;
+
+create table sources_logs
+(
+	source_pk int references sources(pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table sources_logs owner to cats;
+
+create table requisitions
+(
+	pk serial primary key,
+	requisition_id text not null,
+	profile int not null references job_positions(pk),
+	total int not null,
+	end_date timestamptz,
+	created_by int references employees_permission(employees_pk),
+	date_created timestamptz default now(),
 	archived boolean default false
 );
-alter table permissions owner to cats;
+alter table requisitions owner to cats;
+create unique index requisitions_unique_idx on requisitions (requisition_id);
+COMMENT ON COLUMN requisitions.profile is 'PROFILE';
+COMMENT ON COLUMN requisitions.total is 'TOTAL';
+COMMENT ON COLUMN requisitions.end_date is 'END DATE';
+COMMENT ON COLUMN requisitions.archived is 'STATUS';
+
+create table requisitions_logs
+(
+	requisitions_pk int references requisitions(pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table requisitions_logs owner to cats;
 
 create trigger insertlogs before update on applicants for each row execute procedure insertlogs();
 create trigger insertlogs before update on applicants_tags for each row execute procedure insertlogs();
+
+create trigger insertlogs before update on job_positions for each row execute procedure insertlogs();
+create trigger insertlogs before update on clients for each row execute procedure insertlogs();
+create trigger insertlogs before update on sources for each row execute procedure insertlogs();

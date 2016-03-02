@@ -12,26 +12,154 @@
     </div>
     <div class="panel">
         <div class="panel-body">
-            <div class="col-md-12">
-                <table datatable="ng" class="row-border hover">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>FirstName</th>
-                        <th>LastName</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="person in showCase.persons">
-                        <td>{{ person.id }}</td>
-                        <td>{{ person.firstName }}</td>
-                        <td>{{ person.lastName }}</td>
-                    </tr>
-                    </tbody>
-                </table>                
 
+            <div class="col-md-12">
+                <div style="padding-left: 15px;">
+                    <input type="text" style="width:500px;" ng-model="new_source" placeholder="New Source" /> 
+                    <input type="button" class="btn btn-primary" value="ADD" ng-click="add_source()" ng-disabled="!new_source" />
+                </div>
+                
+                <div style="height: 10px;"></div>
+
+                <div>
+                    <div>
+                        <div class="col-sm-7" style="margin-bottom:40px;">
+                            
+                        </div>
+                        <div class="col-sm-2" style="margin-bottom:40px;">
+                            <select class="form-control input-sm" ng-model="table_status" ng-change="table_status_changed()">
+                                <option value="Enabled">Enabled</option>
+                                <option value="Disabled">Disabled</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2" style="margin-bottom:40px; text-align:right;">
+                            <input aria-controls="dataTables-example" type="text" style="height: 30px;" placeholder="Search..." ng-model="table_search" ng-change="table_search_changed()" />
+                        </div>
+                        <div class="col-sm-1">
+                            <select aria-controls="dataTables-example" class="form-control input-sm" ng-model="pagination.pageSize" ng-change="get_sources()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="25" data-ng-if="pagination.total >= 25">25</option>
+                                <option value="50" data-ng-if="pagination.total >= 50">50</option>
+                                <option value="100" data-ng-if="pagination.total >= 100">100</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12" style="margin-top: -35px;">
+                            <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15px;">#</th>
+                                        <th>Source</th>
+                                        <th style="width:205px;">Options</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="sources.status" ng-repeat="(k, v) in sources.data" ng-click="edit_applicant(k)">
+                                        <td>{{ k + 1 }}</td>
+                                        <td>{{v.source}}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    ACTION
+                                                    <span class="fa fa-angle-down"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a style="cursor:pointer;" ng-click="EDIT(k)">Edit</a></li>
+                                                    <li><a style="cursor:pointer;" ng-click="DELETE(k)">Disable</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="!sources.status">
+                                        <td colspan="4" style="text-align: center;">
+                                            No data available
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" style="text-align:right;">
+                    <paging
+                        class="small"
+                        page="pagination.currentPage" 
+                        page-size="pagination.pageSize" 
+                        total="pagination.total"
+                        adjacent="{{pagination.adjacent}}"
+                        dots="{{pagination.dots}}"
+                        scroll-top="{{pagination.scrollTop}}" 
+                        hide-if-empty="{{pagination.hideIfEmpty}}"
+                        ul-class="{{pagination.ulClass}}"
+                        active-class="{{pagination.activeClass}}"
+                        disabled-class="{{pagination.disabledClass}}"
+                        show-prev-next="{{pagination.showPrevNext}}"
+                        paging-action="paging_action('Paging Clicked', page, pageSize, total)">
+                    </paging>
+                </div>
+            </div>
+
+            <!-- LOGS -->
+
+            <div class="col-sm-5">
+                <h3>Logs</h3>
+                <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">`
+                    <tbody>
+                        <tr ng-if="logs.status" ng-repeat="(k, v) in logs.data">
+                            <td>
+                                <div>
+                                    {{v.details}}
+                                </div>
+                                <div style="color:#2196f3; font-size:10px; margin-top:5px;">
+                                    {{v.name}} {{v.date_created}}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-if="!logs.status">
+                            <td colspan="2" style="text-align: center;">
+                                No data available
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-if="logs.status && more">
+                        <tr>
+                            <td><a style="cursor:pointer;" ng-click="more_logs(5)">more...</a></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        
     </div>
 </div>
 <!-- end: content -->
+
+<script type="text/ng-template" id="EditModal">
+    <div class="ngdialog-message">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+        </div>
+        <div>
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>Source: </td>
+                    <td>
+                        <input type="text" ng-model="modal.source" style="width: 100%;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Remarks: </td>
+                    <td>
+                        <textarea ng-model="modal.remarks" cols="50" rows="10"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+    </div>
+</script>
