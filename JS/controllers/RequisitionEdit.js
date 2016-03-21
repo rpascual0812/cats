@@ -24,7 +24,11 @@ app.controller('RequisitionEdit', function(
     $scope.modal = {};
 
     $scope.display = {
-        profile : {
+        alternate_title : {
+            text : true,
+            input : false
+        },
+        job_position : {
             text : true,
             input : false
         },
@@ -43,6 +47,11 @@ app.controller('RequisitionEdit', function(
         needed : "Number of applicants needed",
         end_date : "Target End Date"
     };
+
+    $scope.timer = {};
+    $scope.timer.endtime = null;
+    $scope.timer.bg1 = 'bg-blue1';
+    $scope.timer.bg2 = 'bg-blue2';
 
     init();
 
@@ -69,8 +78,7 @@ app.controller('RequisitionEdit', function(
             $scope.profile = data.data.result[0];
 
             request();
-            getjobpositions();
-        })   
+        })
     }
 
     function request(){
@@ -84,11 +92,74 @@ app.controller('RequisitionEdit', function(
             
             $scope.request.end_date = $scope.request.end_date.substring(0, $scope.request.end_date.length -3);
             get_remarks();
+            getjobpositions();
+
+            initializeClock('clockdiv');
         })
         .then(null, function(data){
             
         });
     }
+
+    /*
+    TIMER
+    */
+    function getTimeRemaining(endtime) {
+        var t = Date.parse(endtime) - Date.parse(new Date());
+        var seconds = Math.floor((t / 1000) % 60);
+        var minutes = Math.floor((t / 1000 / 60) % 60);
+        var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+        var days = Math.floor(t / (1000 * 60 * 60 * 24));
+        
+        return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function initializeClock(id) {
+        $scope.timer.endtime = new Date(Date.parse(new Date($scope.request.end_date)));
+
+        var clock = document.getElementById(id);
+        var daysSpan = clock.querySelector('.days');
+        var hoursSpan = clock.querySelector('.hours');
+        var minutesSpan = clock.querySelector('.minutes');
+        var secondsSpan = clock.querySelector('.seconds');
+        
+        function updateClock() {
+            var t = getTimeRemaining($scope.timer.endtime);
+
+            if(t.total < 0){
+                daysSpan.innerHTML = '0';
+                hoursSpan.innerHTML = '0';
+                minutesSpan.innerHTML = '0';
+                secondsSpan.innerHTML = '0';
+
+                $scope.timer.bg1 = 'bg-red1';
+                $scope.timer.bg2 = 'bg-red2';
+            }
+            else {
+                daysSpan.innerHTML = t.days;
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);    
+            }
+            
+            if (t.total <= 0) {
+                clearInterval(timeinterval);
+            }
+        }
+
+        clearInterval(timeinterval);
+        var timeinterval = setInterval(updateClock, 1000);
+        updateClock();
+    }
+    /*
+    END OF TIMER
+    */
 
     function getjobpositions(){
         var filters = {
@@ -103,7 +174,7 @@ app.controller('RequisitionEdit', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.request.profile_pk){
+                if(a[i].pk == $scope.request.job_positions_pk){
                     ticked = true;
                 }
 

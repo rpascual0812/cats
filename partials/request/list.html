@@ -9,9 +9,9 @@
         <div class="panel-body">
             <div class="col-md-12">
                 <h3 class="animated fadeInLeft">Requisitions</h3>
-                <p class="animated fadeInDown">
-                    Home <span class="fa-angle-right fa"></span> 
-                    Requisitions <span class="fa-angle-right fa"></span> List
+                <p class="animated fadeInDown breadcrumbs">
+                    <a href="#/"> Home</a> <span class="fa-angle-right fa"></span> 
+                    Requisitions
                 </p>
             </div>
         </div>
@@ -54,9 +54,10 @@
                 <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Requisition #</th>
                             <th>Date Submitted</th>
-                            <th>Profile</th>
+                            <th>Requisition ID</th>
+                            <th>Alternate Title</th>
+                            <th>Job Position</th>
                             <th>Needed</th>
                             <th>Being Processed</th>
                             <th>Not Hired</th>
@@ -66,9 +67,10 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="(k, v) in requisitions.data" ng-click="EDIT(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
-                            <td>{{v.pk}}</td>
                             <td>{{v.date_created}}</td>
-                            <td>{{v.profile}}</td>
+                            <td>{{v.requisition_id}}</td>
+                            <td>{{v.alternate_title}}</td>
+                            <td>{{v.job_position}}</td>
                             <td>{{v.needed}}</td>
                             <td>{{v.processing}}</td>
                             <td>{{v.nothired}}</td>

@@ -2,6 +2,8 @@ app.factory('ApplicantsFactory', function($http){
     var factory = {};           
     
     factory.submit = function(data){
+        var new_data = data;
+
         var promise = $http({
             url:'./FUNCTIONS/Tracker/submit.php',
             method: 'POST',

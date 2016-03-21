@@ -6618,3 +6618,11 @@ ul li a:focus {
 .warning-bg {
   background-color: #f1f27a;
 }
+
+.breadcrumbs a{
+  color: #918C8C !important;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}

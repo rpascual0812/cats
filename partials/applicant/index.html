@@ -65,16 +65,16 @@
                                 <tr class="edit-form">
                                     <td class="col-md-3">Profiled for</td>
                                     <td class="col-md-5">
-                                        <span ng-show="display.profiled_for.text" >
-                                            {{applicant.profiled_for}}
+                                        <span ng-show="display.job_position.text" >
+                                            {{applicant.job_position}}
 
-                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
+                                            <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('job_position')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
-                                        <span ng-show="display.profiled_for.input">
+                                        <span ng-show="display.job_position.input">
                                             <div
                                                 isteven-multi-select
                                                 input-model="data.jobpositions"
-                                                output-model="form.profiled_for"
+                                                output-model="form.job_position"
                                                 button-label="icon name"
                                                 item-label="icon name maker"
                                                 tick-property="ticked"
@@ -84,9 +84,9 @@
                                             >
                                             </div>
 
-                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('profiled_for')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+                                            <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('job_position')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
 
-                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('profiled_for')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
+                                            <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('job_position')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
                                         </span>
                                     </td>
                                 </tr>
@@ -301,12 +301,12 @@
                                 <tr class="edit-form">
                                     <td class="col-md-3">CV</td>
                                     <td class="col-md-5">
-                                        <span ng-show="display.cv.text">
+                                        <span ng-show="display.cv.text && applicant.cv != 'null'">
                                             <a ng-click="download_cv(applicant.cv)" style="cursor:pointer;">Download</a>
 
                                             <span class="fa fa-pencil edit-button" style="margin-left:10px;" ng-click="edit_field('cv')" data-toggle="tooltip" data-placement="right" title="Edit"></span>
                                         </span>
-                                        <span ng-show="display.cv.input">
+                                        <span ng-show="display.cv.input || applicant.cv == 'null'">
                                             <div class="fileupload">
                                                 <div class="left" style="width:300px;">
                                                     <input type="file" 
@@ -440,7 +440,7 @@
             allowClear: false
         });
 
-        $("#form_profiled_for").select2({
+        $("#form_job_position").select2({
             placeholder: "Select a Job Position",
             allowClear: false
         });

@@ -3,7 +3,9 @@ require_once('../../CLASSES/ClassParent.php');
 class Requisitions extends ClassParent {
 
     var $pk = NULL;
-    var $profile = NULL;
+    var $requisition_id = NULL;
+    var $alternate_title = NULL;
+    var $job_positions_pk = NULL;
     var $total = NULL;
     var $end_date = NULL;
     var $remarks = NULL;
@@ -21,14 +23,15 @@ class Requisitions extends ClassParent {
     }
 
     public function create($data){
-        $profile_pk = pg_escape_string(trim(strip_tags($data['profile_pk'])));
+        $job_positions_pk = pg_escape_string(trim(strip_tags($data['job_positions_pk'])));
 
         $sql = "begin;";
         $sql .= <<<EOT
             insert into requisitions
             (
                 requisition_id,
-                profile,
+                alternate_title,
+                job_positions_pk,
                 total,
                 end_date,
                 created_by
@@ -36,7 +39,8 @@ class Requisitions extends ClassParent {
             values
             (
                 coalesce((select to_char(now(), 'YYMM-') || lpad((substring(max(requisition_id) from 6 for 4)::int + 1)::text, 4, '0') from requisitions), to_char(now(), 'YYMM-0001')),
-                $profile_pk,
+                '$this->alternate_title',
+                $job_positions_pk,
                 $this->total,
                 '$this->end_date',
                 $this->created_by
@@ -89,15 +93,16 @@ EOT;
         return ClassParent::insert($sql);
     }
 
-    public function fetch(){
+    public function fetch_all(){
         $where="true";
         
         $sql = <<<EOT
                 select
                     pk,
                     requisition_id,
-                    profile as profile_pk,
-                    (select position from job_positions where pk = profile) as profile,
+                    alternate_title,
+                    job_positions_pk,
+                    (select position from job_positions where pk = job_positions_pk) as job_position,
                     total as needed,
                     0 as processing,
                     0 as nothired,
@@ -107,6 +112,29 @@ EOT;
                     date_created::timestamp(0) as date_created
                 from requisitions
                 where $where
+                order by end_date asc
+                ;
+EOT;
+
+        return ClassParent::get($sql);
+    }
+
+    public function fetch(){
+        $where="true";
+        
+        $sql = <<<EOT
+                select
+                    pk,
+                    requisition_id,
+                    alternate_title,
+                    job_positions_pk,
+                    (select position from job_positions where pk = job_positions_pk) as job_position,
+                    created_by as employees_pk,
+                    (select employee from employees_permission where employees_pk = created_by) as created_by,
+                    end_date::timestamp(0) as end_date,
+                    date_created::timestamp(0) as date_created
+                from requisitions
+                where end_date >= now()
                 order by date_created asc
                 ;
 EOT;
@@ -121,8 +149,9 @@ EOT;
                 select
                     pk,
                     requisition_id,
-                    profile as profile_pk,
-                    (select position from job_positions where pk = profile) as profile,
+                    alternate_title,
+                    job_positions_pk,
+                    (select position from job_positions where pk = job_positions_pk) as job_position,
                     total as needed,
                     0 as processing,
                     0 as nothired,
@@ -168,6 +197,7 @@ EOT;
         $employees_pk = $data['employees_pk'];
         $requisition_id = $data['requisition_id'];
         $requisitions_pk = $data['requisitions_pk'];
+        $alternate_title = $data['alternate_title'];
 
         unset($data['remarks']);
         unset($data['employees_pk']);
@@ -226,7 +256,7 @@ EOT;
                 );
 EOT;
 
-        $involved_users = $this->get_contributors($pk, $employees_pk);
+        $involved_users = $this->get_contributors($requisitions_pk, $employees_pk);
         $users = $involved_users['result'];
 
         foreach ($users as $key => $value) {
@@ -242,9 +272,9 @@ EOT;
                 values
                 (   
                     $emp,
-                    'Requisition $requistion_id has been modified.'
+                    'Requisition $requisition_id has been modified.',
                     'requisition',
-                    $requisitions_pk,
+                    $requisitions_pk
                 );
 EOT;
         }

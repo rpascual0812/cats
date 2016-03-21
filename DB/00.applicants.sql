@@ -106,7 +106,8 @@ create table applicants
 (
 	pk serial primary key,
 	applicant_id text not null,
-	source int not null references sources(pk),
+	requisitions_pk int not null references requisitions(pk),
+	sources_pk int not null references sources(pk),
 	created_by int not null,
 	date_created timestamptz default now(),
 	date_recieved timestamptz not null,
@@ -118,20 +119,21 @@ create table applicants
 	last_name text not null,
 	middle_name text,
 	birthdate timestamptz,
-	profiled_for int references job_positions(pk),
+	job_positions_pk int references job_positions(pk),
 	contact_number text not null,
 	email_address text not null,
 	endorcer text,
 	endorcement_date timestamptz,
-	client int references clients(pk),
+	clients_pk int references clients(pk),
 	cv text not null,
 	appointment_date timestamptz,
-	status int references statuses(pk)
+	statuses_pk int references statuses(pk)
 );
 alter table applicants owner to cats;
 create unique index applicant_id_idx on applicants (applicant_id);
 
-COMMENT ON COLUMN applicants.source is 'SOURCE';
+COMMENT ON COLUMN applicants.requisitions_pk is 'REQUISITION';
+COMMENT ON COLUMN applicants.sources_pk is 'SOURCE';
 COMMENT ON COLUMN applicants.date_received is 'DATE RECEIVED';
 -- COMMENT ON COLUMN applicants.talent_acquisition is 'TALENT ACQUISITION';
 -- COMMENT ON COLUMN applicants.date_interaction is 'DATE INTERACTION';
@@ -141,16 +143,16 @@ COMMENT ON COLUMN applicants.first_name is 'FIRST NAME';
 COMMENT ON COLUMN applicants.last_name is 'LAST NAME';
 COMMENT ON COLUMN applicants.middle_name is 'MIDDLE NAME';
 COMMENT ON COLUMN applicants.birthdate is 'BIRTHDATE';
-COMMENT ON COLUMN applicants.profiled_for is 'PROFILED FOR';
+COMMENT ON COLUMN applicants.job_positions_pk is 'PROFILED FOR';
 COMMENT ON COLUMN applicants.contact_number is 'CONTACT NUMBER';
 COMMENT ON COLUMN applicants.email_address is 'EMAIL ADDRESS';
 -- COMMENT ON COLUMN applicants.endorcer is 'ENDORCER';
 -- COMMENT ON COLUMN applicants.endorcement_date is 'ENDORCEMENT DATE';
-COMMENT ON COLUMN applicants.client is 'CLIENT';
+COMMENT ON COLUMN applicants.clients_pk is 'CLIENT';
 COMMENT ON COLUMN applicants.cv is 'CV';
 -- COMMENT ON COLUMN applicants.appointmed_by is 'APPOINTED By';
 -- COMMENT ON COLUMN applicants.appointment_date is 'APPOINTMENT DATE';
-COMMENT ON COLUMN applicants.status is 'STATUS';
+COMMENT ON COLUMN applicants.statuses_pk is 'STATUS';
 
 create table applicants_talent_acquisition
 (
@@ -252,7 +254,8 @@ create table requisitions
 (
 	pk serial primary key,
 	requisition_id text not null,
-	profile int not null references job_positions(pk),
+	alternate_title text,
+	job_positions_pk int not null references job_positions(pk),
 	total int not null,
 	end_date timestamptz,
 	created_by int references employees_permission(employees_pk),
@@ -261,7 +264,7 @@ create table requisitions
 );
 alter table requisitions owner to cats;
 create unique index requisitions_unique_idx on requisitions (requisition_id);
-COMMENT ON COLUMN requisitions.profile is 'PROFILE';
+COMMENT ON COLUMN requisitions.job_positions_pk is 'Job Position';
 COMMENT ON COLUMN requisitions.total is 'TOTAL';
 COMMENT ON COLUMN requisitions.end_date is 'END DATE';
 COMMENT ON COLUMN requisitions.archived is 'STATUS';

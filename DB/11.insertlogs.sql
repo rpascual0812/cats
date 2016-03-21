@@ -31,15 +31,15 @@ def generatecomment(colname, colordinal):
                 pass
         ##APPLICANTS TABLE
         elif TD['table_name'] == "applicants":
-            if colname == 'profiled_for':
-                if TD['old']['profiled_for'] <> TD['new']['profiled_for']:
+            if colname == 'job_positions_pk':
+                if TD['old']['job_positions_pk'] <> TD['new']['job_positions_pk']:
                     oldval=""
-                    oldvalq = plpy.execute("SELECT position from job_positions where pk = "+ str(TD['old']['profiled_for']))
+                    oldvalq = plpy.execute("SELECT position from job_positions where pk = "+ str(TD['old']['job_positions_pk']))
                     for i in oldvalq:
                         oldval = i['position']
 
                     newval=""
-                    newvalq = plpy.execute("SELECT position from job_positions where pk = "+ str(TD['new']['profiled_for']))
+                    newvalq = plpy.execute("SELECT position from job_positions where pk = "+ str(TD['new']['job_positions_pk']))
                     for i in newvalq:
                         newval = i['position']
 
@@ -48,15 +48,15 @@ def generatecomment(colname, colordinal):
                     pass
 
         
-            elif colname == 'status':
-                if TD['old']['status'] <> TD['new']['status']:
+            elif colname == 'statuses_pk':
+                if TD['old']['statuses_pk'] <> TD['new']['statuses_pk']:
                     oldval=""
-                    oldvalq = plpy.execute("SELECT status from statuses where pk = "+ str(TD['old']['status']))
+                    oldvalq = plpy.execute("SELECT status from statuses where pk = "+ str(TD['old']['statuses_pk']))
                     for i in oldvalq:
                         oldval = i['status']
 
                     newval=""
-                    newvalq = plpy.execute("SELECT status from statuses where pk = "+ str(TD['new']['status']))
+                    newvalq = plpy.execute("SELECT status from statuses where pk = "+ str(TD['new']['statuses_pk']))
                     for i in newvalq:
                         newval = i['status']
 
@@ -64,17 +64,49 @@ def generatecomment(colname, colordinal):
                 else:
                     pass
 
-            elif colname == 'source':
-                if TD['old']['source'] <> TD['new']['source']:
+            elif colname == 'sources_pk':
+                if TD['old']['sources_pk'] <> TD['new']['sources_pk']:
                     oldval=""
-                    oldvalq = plpy.execute("SELECT source from sources where pk = "+ str(TD['old']['source']))
+                    oldvalq = plpy.execute("SELECT source from sources where pk = "+ str(TD['old']['sources_pk']))
                     for i in oldvalq:
                         oldval = i['source']
 
                     newval=""
-                    newvalq = plpy.execute("SELECT source from sources where pk = "+ str(TD['new']['source']))
+                    newvalq = plpy.execute("SELECT source from sources where pk = "+ str(TD['new']['sources_pk']))
                     for i in newvalq:
                         newval = i['source']
+
+                    comment = str(coldesc[0].get('col_description')) + ' was changed from ' + str(oldval) + ' to ' + str(newval)
+                else:
+                    pass
+
+            elif colname == 'clients_pk':
+                if TD['old']['clients_pk'] <> TD['new']['clients_pk']:
+                    oldval=""
+                    oldvalq = plpy.execute("SELECT client from clients where pk = "+ str(TD['old']['clients_pk']))
+                    for i in oldvalq:
+                        oldval = i['client']
+
+                    newval=""
+                    newvalq = plpy.execute("SELECT client from clients where pk = "+ str(TD['new']['clients_pk']))
+                    for i in newvalq:
+                        newval = i['client']
+
+                    comment = str(coldesc[0].get('col_description')) + ' was changed from ' + str(oldval) + ' to ' + str(newval)
+                else:
+                    pass
+
+            elif colname == 'requisitions_pk':
+                if TD['old']['requisitions_pk'] <> TD['new']['requisitions_pk']:
+                    oldval=""
+                    oldvalq = plpy.execute("SELECT client from clients where pk = "+ str(TD['old']['requisitions_pk']))
+                    for i in oldvalq:
+                        oldval = i['client']
+
+                    newval=""
+                    newvalq = plpy.execute("SELECT client from clients where pk = "+ str(TD['new']['requisitions_pk']))
+                    for i in newvalq:
+                        newval = i['client']
 
                     comment = str(coldesc[0].get('col_description')) + ' was changed from ' + str(oldval) + ' to ' + str(newval)
                 else:

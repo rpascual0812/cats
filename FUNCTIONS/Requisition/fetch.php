@@ -8,7 +8,7 @@ foreach($_POST as $k=>$v){
 }
 
 $class = new Requisitions($data);
-$data = $class->fetch_all($data);
+$data = $class->fetch($data);
 
 header("HTTP/1.0 500 Internal Server Error");
 if($data['status']==true){

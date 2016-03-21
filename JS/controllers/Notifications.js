@@ -87,19 +87,13 @@ app.controller('Notifications', function(
         var filter = {
             employees_pk : $scope.pk
         };
+
         var promise = NotificationsFactory.fetch(filter);
         promise.then(function(data){            
             $scope.notifications.data = data.data.result;
 
-            if($scope.notifications.count > 1){
-                for(var i in data.data.result){
-                    if(data.data.result[i].status == 'online'){
-                        changeDocumentTitle(data.data.result[i].notification, 0);    
-                    }
-                }
-            }
-
             count_notifications();
+            
         })
         .then(null, function(data){
             $scope.notifications.count = 0;
@@ -111,6 +105,14 @@ app.controller('Notifications', function(
         for(var i in $scope.notifications.data){
             if($scope.notifications.data[i].status == 'online'){
                 count++;
+            }
+        }
+
+        if(count > 0){
+            for(var i in $scope.notifications.data){
+                if($scope.notifications.data[i].status == 'online'){
+                    changeDocumentTitle($scope.notifications.data[i].notification, 0);    
+                }
             }
         }
 

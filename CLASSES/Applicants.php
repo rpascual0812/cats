@@ -4,18 +4,19 @@ class Applicants extends ClassParent {
 
     var $pk = NULL;
     var $applicant_id = NULL;
+    var $requisitions_pk = NULL;
     var $created_by = NULL;
-    var $source = NULL;
+    var $sources_pk = NULL;
     var $date_created = NULL;
     var $date_received = NULL;
     var $first_name = NULL;
     var $last_name = NULL;
     var $middle_name = NULL;
     var $birthdate = NULL;
-    var $profiled_for = NULL;
+    var $profiled_for_pk = NULL;
     var $contact_number = NULL;
     var $email_address = NULL;
-    var $client = NULL;
+    var $clients_pk = NULL;
     var $cv = NULL;
 
     public function __construct($data){
@@ -29,41 +30,49 @@ class Applicants extends ClassParent {
     }
 
     public function create($data){
+        foreach($data as $k=>$v){
+            $data[$k] = pg_escape_string(trim(strip_tags($v)));
+        }
+
         $applicant_id = $this->random_string();
         $tags = "{".pg_escape_string(trim(strip_tags($data['new_tags'])))."}";
         
+        $talent_acquisition_pk = $data['talent_acquisition_pk'];
+
         $sql = "begin;";
         $sql .= <<<EOT
             insert into applicants
             (
                 applicant_id,
-                source,
+                requisitions_pk,
+                sources_pk,
                 created_by,
                 date_received,
                 first_name,
                 last_name,
                 middle_name,
                 birthdate,
-                profiled_for,
+                job_positions_pk,
                 contact_number,
                 email_address,
-                client,
+                clients_pk,
                 cv
             )
             values
             (
                 '$applicant_id',
-                '$this->source',
+                '$this->requisitions_pk',
+                '$this->sources_pk',
                 '$this->created_by',
                 '$this->date_received',
                 '$this->first_name',
                 '$this->last_name',
                 '$this->middle_name',
                 '$this->birthdate',
-                '$this->profiled_for',
+                '$this->profiled_for_pk',
                 '$this->contact_number',
                 '$this->email_address',
-                '$this->client',
+                '$this->clients_pk',
                 '$this->cv'
             );
             insert into applicants_status
@@ -86,7 +95,7 @@ class Applicants extends ClassParent {
             values
             (
                 currval('applicants_pk_seq'),
-                $this->talent_acquisition
+                $talent_acquisition_pk
             );
             insert into applicants_logs
             (
@@ -111,7 +120,7 @@ class Applicants extends ClassParent {
             )
             values
             (
-                $this->talent_acquisition,
+                $talent_acquisition_pk,
                 'A new candidate has been added.',
                 'applicants',
                 currval('applicants_pk_seq')
@@ -152,14 +161,14 @@ EOT;
         }
 
         if(isset($data['new_status'])){
-            $where .= " and applicants.status = ". $data['new_status'];
+            $where .= " and applicants.statuses_pk = ". $data['new_status'];
         }
 
         $sql = <<<EOT
                 select
                     pk,
                     applicant_id,
-                    (select source from sources where pk = applicants.source::int) as source,
+                    (select source from sources where pk = applicants.sources_pk::int) as source,
                     created_by,
                     date_created::timestamp(0) as date_created,
                     date_received::date as date_received,
@@ -172,12 +181,12 @@ EOT;
                     last_name,
                     middle_name,
                     birthdate::date as birthdate,
-                    (select position from job_positions where pk = profiled_for) as profiled_for,
+                    (select position from job_positions where pk = job_positions_pk) as profiled_for,
                     contact_number,
                     email_address,
                     endorcer,
                     endorcement_date,
-                    (select client from clients where pk = applicants.client) as client,
+                    (select client from clients where pk = applicants.clients_pk) as client,
                     cv,
                     (select statuses.status from applicants_status left join statuses on (applicants_status.status = statuses.pk) where applicants_pk = applicants.pk order by date_created desc limit 1) as status
                 from applicants
@@ -228,13 +237,13 @@ EOT;
                 select
                     pk,
                     applicant_id,
-                    applicants.source as source_pk,
-                    (select source from sources where pk = applicants.source::int) as source,
+                    applicants.sources_pk,
+                    (select source from sources where pk = applicants.sources_pk::int) as source,
                     created_by,
                     date_created::timestamp(0) as date_created,
                     date_received::date as date_received,
                     date_received::time as time_received,
-                    (select employees_pk from applicants_talent_acquisition where applicants_pk = pk order by date_created desc limit 1) as talent_acquisition_pk,
+                    (select employees_pk from applicants_talent_acquisition where applicants_pk = pk order by date_created desc limit 1) as talent_acquisitions_pk,
                     (select employee from applicants_talent_acquisition left join employees_permission on (applicants_talent_acquisition.employees_pk = employees_permission.employees_pk) where applicants_talent_acquisition.applicants_pk = pk order by applicants_talent_acquisition.date_created desc limit 1) as talent_acquisition,
                     -- date_interaction,
                     -- time_completed,
@@ -245,19 +254,19 @@ EOT;
                     last_name,
                     middle_name,
                     birthdate::date as birthdate,
-                    profiled_for as profiled_for_pk,
-                    (select position from job_positions where pk = profiled_for) as profiled_for,
+                    applicants.job_positions_pk,
+                    (select position from job_positions where pk = job_positions_pk) as job_position,
                     contact_number,
                     email_address,
                     (select max(endorsement::date) from applicants_endorser where applicants_pk = pk) as endorsement_date,
                     (select max(appointment::date) from applicants_appointer where applicants_pk = pk) as appointment_date,
                     -- endorcer,
                     -- endorcement_date,
-                    Applicants.client as client_pk,
-                    (select client from clients where pk = applicants.client) as client,
+                    applicants.clients_pk,
+                    (select client from clients where pk = applicants.clients_pk) as client,
                     cv,
-                    status as status_pk,
-                    (select status from statuses where pk = applicants.status) as status
+                    statuses_pk,
+                    (select status from statuses where pk = applicants.statuses_pk) as status
                 from applicants
                 where applicant_id = '$this->applicant_id'
                 ;
@@ -327,10 +336,10 @@ EOT;
             unset($data['date_appointment']);
         }
 
-        $talent_acquisition = null;
-        if(isset($data['talent_acquisition'])){
-            $talent_acquisition = $data['talent_acquisition'];
-            unset($data['talent_acquisition']);
+        $talent_acquisitions_pk = null;
+        if(isset($data['talent_acquisitions_pk'])){
+            $talent_acquisitions_pk = $data['talent_acquisitions_pk'];
+            unset($data['talent_acquisitions_pk']);
         }
 
         $post = null;
@@ -372,7 +381,7 @@ EOT;
 EOT;
         }
 
-        if(isset($talent_acquisition)){
+        if(isset($talent_acquisitions_pk)){
             $sql = <<<EOT
                     insert into applicants_talent_acquisition
                     (
@@ -382,7 +391,7 @@ EOT;
                     values
                     (
                         $applicants_pk,
-                        $talent_acquisition
+                        $talent_acquisitions_pk
                     );
 
                     insert into applicants_logs
@@ -401,9 +410,9 @@ EOT;
                                                                         employees_permission.employee
                                                                     from applicants_talent_acquisition
                                                                         left join employees_permission on (applicants_talent_acquisition.employees_pk = employees_permission.employees_pk)
-                                                                    where applicants_talent_acquisition.applicants_pk = $applicants_pk and applicants_talent_acquisition.employees_pk != $talent_acquisition
+                                                                    where applicants_talent_acquisition.applicants_pk = $applicants_pk and applicants_talent_acquisition.employees_pk != $talent_acquisitions_pk
                                                                     order by applicants_talent_acquisition.date_created desc limit 1
-                                                                ) || ' to ' || (select employee from employees_permission where employees_pk = $talent_acquisition),
+                                                                ) || ' to ' || (select employee from employees_permission where employees_pk = $talent_acquisitions_pk),
                         0
                     );
 EOT;

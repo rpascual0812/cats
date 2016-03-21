@@ -17,12 +17,18 @@
                 <table class="table table-striped table-bordered">
                     <tbody>
                         <tr>
-                            <td>Profile</td>
+                            <td>Alternate Title</td>
+                            <td>
+                                <input type="text" style="width:100%;" maxlength="50" ng-model="form.alternate_title" ng-change="clearerror('alternate_title')" ng-class="formerror.alternate_title"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Job Position</td>
                             <td>
                                 <div
                                     isteven-multi-select
                                     input-model="data.jobpositions"
-                                    output-model="form.profile"
+                                    output-model="form.job_position"
                                     button-label="icon name"
                                     item-label="icon name maker"
                                     tick-property="ticked"
@@ -39,6 +45,7 @@
                                 <input type="text" style="width:60px; text-align: center;" maxlength="3" ng-model="form.total" ng-change="clearerror('total')" ng-class="formerror.total" is-number />
                             </td>
                         </tr>
+
                         <tr>
                             <td>Target End Date</td>
                             <td>
@@ -46,7 +53,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Remarks</td>
+                            <td>Notes</td>
                             <td>
                                 <textarea cols="100" rows="15" ng-model="form.remarks" ng-change="clearerror('remarks')" ng-class="formerror.remarks"></textarea>
                             </td>

@@ -58,6 +58,7 @@ create table time_log
 (
 	employees_pk int references employees(pk),
 	type text not null default 'In',
+	time_log timestamptz default now(),
 	date_created timestamptz default now()
 );
 alter table time_log owner to chrs;
@@ -81,6 +82,14 @@ create table groupings
 alter table groupings owner to chrs;
 create unique index groupings_unique_idx on groupings (employees_pk, supervisor_pk);
 
+create table feedbacks
+(
+	pk serial primary key,
+	feedback text not null,
+	tool text not null,
+	date_created timestamptz default now()
+);
+alter table feedbacks owner to chrs;
 -- insert into accounts
 -- (
 -- 	employee_id,

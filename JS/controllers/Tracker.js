@@ -5,6 +5,7 @@ app.controller('Tracker', function(
                                         JobsFactory,
                                         ClientsFactory,
                                         EmployeesFactory,
+                                        RequestFactory,
                                         SessionFactory,
                                         $timeout,
                                         md5,
@@ -58,6 +59,8 @@ app.controller('Tracker', function(
     $scope.details = {};
     $scope.details.otheroptions = false;
 
+    $scope.requisitions = [];
+
     init();
 
     function init(){
@@ -66,17 +69,38 @@ app.controller('Tracker', function(
             var _id = md5.createHash('pk');
             $scope.pk = data.data[_id];
 
+            get_requisitions();
             get_profile();
             getsources();
             getjobpositions();
             getclients();
             getTA();
-
-
         })
         .then(null, function(data){
             window.location = './login.html';
         });
+    }
+
+    function get_requisitions(){
+        var promise = RequestFactory.fetch();
+        promise.then(function(data){
+            var a = data.data.result;
+
+            for(var i in a){
+                var name = null;
+                if(a[i].alternate_title)
+                    name = a[i].alternate_title;
+                else 
+                    name = a[i].job_position;
+
+                $scope.requisitions.push({
+                                            pk: a[i].pk,
+                                            requisition_id : a[i].requisition_id,
+                                            name: name,
+                                            ticked: false
+                                        });
+            }
+        })
     }
 
     function get_profile(){
@@ -215,27 +239,33 @@ app.controller('Tracker', function(
 	}
 
     function submit_applicant(){
+        console.log($scope.form);
         $scope.form.created_by = $scope.profile.pk;
 
+        if($scope.form.requisition[0]){
+            $scope.form.requisitions_pk = $scope.form.requisition[0].pk;
+        }
+
         if($scope.form.source[0]){
-            $scope.form.source = $scope.form.source[0].pk;
+            $scope.form.sources_pk = $scope.form.source[0].pk;
         }
 
         if($scope.form.profiled_for[0]){
-            $scope.form.profiled_for = $scope.form.profiled_for[0].pk;    
+            $scope.form.profiled_for_pk = $scope.form.profiled_for[0].pk;    
         }
         
         if($scope.form.client[0]){
-            $scope.form.client = $scope.form.client[0].pk;    
+            $scope.form.clients_pk = $scope.form.client[0].pk;    
         }
         
         if($scope.form.talent_acquisition[0]){
-            $scope.form.talent_acquisition = $scope.form.talent_acquisition[0].pk;
+            $scope.form.talent_acquisition_pk = $scope.form.talent_acquisition[0].pk;
         }
 
         $scope.form.cv = $scope.cv;
         var error=0;
         for(var i in $scope.form){
+            
             if(i == "cv"){
                 //skip, not required
             }
@@ -247,9 +277,9 @@ app.controller('Tracker', function(
 
                 $scope.form['new_tags'] = new_tags.join(',');
             }
-            else if(typeof($scope.form[i]) == 'object' && $scope.form[i].length == 0){
-                $scope.formerror[i] = 'formerror';
-                error++;
+            else if(typeof($scope.form[i]) == 'object'){
+                // $scope.formerror[i] = 'formerror';
+                // error++;
             }
             else if($scope.form[i].replace(/\s/g,'') == ""){
                 $scope.formerror[i] = 'formerror';
@@ -346,6 +376,10 @@ app.controller('Tracker', function(
 
         for(var i in $scope.data.talent_acquisitions){
             $scope.data.talent_acquisitions[i].ticked = false;
+        }
+
+        for(var i in $scope.data.requisitions){
+            $scope.data.requisitions[i].ticked = false;
         }
 
         $scope.picFile = null;

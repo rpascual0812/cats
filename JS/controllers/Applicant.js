@@ -10,7 +10,8 @@ app.controller('Applicant', function(
                                         StatusesFactory,
                                         Upload, $timeout,
                                         md5,
-                                        ngDialog
+                                        ngDialog,
+                                        UINotification
                                     ){
 
 	$scope.form = {};
@@ -55,8 +56,8 @@ app.controller('Applicant', function(
         contact_number : "Contact Number",
         email_address : "Email Address",
         cv : "CV",
-        profiled_for_id : "Profiled For",
-        profiled_for : "Profiled For",
+        job_position_id : "Profiled For",
+        job_position : "Profiled For",
         client_id : "Client",
         client : "Client",
         talent_acquisition_id : "Talent Acquisition",
@@ -104,7 +105,7 @@ app.controller('Applicant', function(
             text : true,
             input : false
         },
-        profiled_for : {
+        job_position : {
             text : true,
             input : false
         },
@@ -240,7 +241,7 @@ app.controller('Applicant', function(
             $scope.applicant = data.data.result[0];
             
             $scope.form.date_received = data.data.result[0].date_received +" "+ data.data.result[0].time_received;
-            $scope.form.source_pk = data.data.result[0].source_pk;
+            $scope.form.sources_pk = data.data.result[0].sources_pk;
             $scope.form.source = data.data.result[0].source;
             $scope.form.last_name = data.data.result[0].last_name;
             $scope.form.first_name = data.data.result[0].first_name;
@@ -249,17 +250,22 @@ app.controller('Applicant', function(
             $scope.form.contact_number = data.data.result[0].contact_number;
             $scope.form.email_address = data.data.result[0].email_address;
             $scope.form.cv = data.data.result[0].cv;
-            $scope.form.profiled_for_pk = data.data.result[0].profiled_for_pk;
-            $scope.form.profiled_for = data.data.result[0].profiled_for;
-            $scope.form.client_pk = data.data.result[0].client_pk;
+            $scope.form.job_positions_pk = data.data.result[0].job_positions_pk;
+            $scope.form.job_position = data.data.result[0].job_position;
+            $scope.form.clients_pk = data.data.result[0].clients_pk;
             $scope.form.client = data.data.result[0].client;
-            $scope.form.talent_acquisition_pk = data.data.result[0].talent_acquisition_pk;
+            $scope.form.talent_acquisitions_pk = data.data.result[0].talent_acquisitions_pk;
             $scope.form.talent_acquisition = data.data.result[0].talent_acquisition;
-            $scope.form.status_pk = data.data.result[0].status_pk;
+            $scope.form.statuses_pk = data.data.result[0].statuses_pk;
             $scope.form.status = data.data.result[0].status;
             $scope.form.date_endorsed = data.data.result[0].endorsement_date;
             $scope.form.date_appointment = data.data.result[0].appointment_date;
 
+            //this is not wise,
+            //create a function
+            //that will reload below
+            //without refetching from the
+            //database level
             get_profile();
             getsources();
             getjobpositions();
@@ -268,7 +274,7 @@ app.controller('Applicant', function(
             getstatuses();
             
             //$timeout(function() {
-                get_applicant_remarks();
+            get_applicant_remarks();
             //}, 3000);
         })   
     }
@@ -328,40 +334,41 @@ app.controller('Applicant', function(
                 }
                 else {
                     var txt;
-                    
-                    if(col == "profiled_for_id"){
-                        for(var i in $scope.data.jobpositions){
-                            if($scope.data.jobpositions[i].pk == $scope.form[col]){
-                                txt = $scope.data.jobpositions[i].position;
-                            }
-                        }
+
+                    var dropdowns = ['job_position','client','status','source','talent_acquisition'];
+                    if(contains(dropdowns, col)){
+                        txt = $scope.form[col][0].name;
                     }
-                    else if(col == "client_id"){
-                        for(var i in $scope.data.clients){
-                            if($scope.data.clients[i].pk == $scope.form[col]){
-                                txt = $scope.data.clients[i].client;
-                            }
-                        }
-                    }
-                    else if(col == "status_id"){
-                        for(var i in $scope.data.statuses){
-                            if($scope.data.statuses[i].pk == $scope.form[col]){
-                                txt = $scope.data.statuses[i].status;
-                            }
-                        }
-                    }
-                    else if(col == "source_id"){
-                        for(var i in $scope.data.sources){
-                            if($scope.data.sources[i].pk == $scope.form[col]){
-                                txt = $scope.data.sources[i].source;
-                            }
-                        }
-                    }
+                    // if(col == "job_position"){
+                    //     for(var i in $scope.data.jobpositions){
+                    //         if($scope.data.jobpositions[i].pk == $scope.form[col][0].pk){
+                    //             txt = $scope.data.jobpositions[i].position;
+                    //         }
+                    //     }
+                    // }
+                    // else if(col == "client"){
+                    //     for(var i in $scope.data.clients){
+                    //         if($scope.data.clients[i].pk == $scope.form[col][0].pk){
+                    //             txt = $scope.data.clients[i].client;
+                    //         }
+                    //     }
+                    // }
+                    // else if(col == "status"){
+                    //     for(var i in $scope.data.statuses){
+                    //         if($scope.data.statuses[i].pk == $scope.form[col][0].pk){
+                    //             txt = $scope.data.statuses[i].status;
+                    //         }
+                    //     }
+                    // }
+                    // else if(col == "source"){
+                    //     for(var i in $scope.data.sources){
+                    //         if($scope.data.sources[i].pk == $scope.form[col][0].pk){
+                    //             txt = $scope.data.sources[i].source;
+                    //         }
+                    //     }
+                    // }
                     else if(col == "name"){
                         txt = $scope.form['first_name'] +" "+ $scope.form['last_name'];
-                    }
-                    else if(col == "talent_acquisition"){
-                        txt = $scope.form[col][0].name;
                     }
                     else {
                         txt = $scope.form[col];
@@ -390,7 +397,22 @@ app.controller('Applicant', function(
             var data = {};
 
             if(typeof($scope.form[col]) == 'object'){
-                data[col] = parseInt($scope.form[col][0].pk);
+                if(col == "job_position"){
+                    data['job_positions_pk'] = $scope.form[col][0].pk;
+                }
+                else if(col == "client"){
+                    data['clients_pk'] = $scope.form[col][0].pk;
+                }
+                else if(col == "status"){
+                    data['statuses_pk'] = $scope.form[col][0].pk;
+                }
+                else if(col == "source"){
+                    data['sources_pk'] = $scope.form[col][0].pk;
+                }
+                else if(col == "talent_acquisition"){
+                    data['talent_acquisitions_pk'] = $scope.form[col][0].pk;
+                }
+                //data[col] = parseInt($scope.form[col][0].pk);
             }
             else if(col == "name"){
                 data['last_name'] = $scope.form['last_name'];
@@ -404,12 +426,27 @@ app.controller('Applicant', function(
             data['remarks'] = $scope.modal.data.remarks;
             data['applicant_id'] = $routeParams.id;
             data['employees_pk'] = $scope.profile.pk;
-            
+
             var promise = ApplicantsFactory.update(data);
             promise.then(function(data){
+                UINotification.success({
+                                    message: 'Update successful.', 
+                                    title: 'SUCCESS', 
+                                    delay : 5000,
+                                    positionY: 'top', positionX: 'right'
+                                });
+
                 get_applicant_details();
-                get_applicant_remarks();
+                //get_applicant_remarks();
             })
+            .then(null, function(data){
+                UINotification.error({
+                                    message: 'An error occurred. Please try again.', 
+                                    title: 'ERROR', 
+                                    delay : 5000,
+                                    positionY: 'top', positionX: 'right'
+                                });
+            });
 
         });
     }
@@ -428,7 +465,7 @@ app.controller('Applicant', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.form.source_pk){
+                if(a[i].pk == $scope.form.sources_pk){
                     ticked = true;
                 }
 
@@ -455,7 +492,7 @@ app.controller('Applicant', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.form.profiled_for_pk){
+                if(a[i].pk == $scope.form.job_positions_pk){
                     ticked = true;
                 }
 
@@ -482,7 +519,7 @@ app.controller('Applicant', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.form.client_pk){
+                if(a[i].pk == $scope.form.clients_pk){
                     ticked = true;
                 }
 
@@ -510,7 +547,7 @@ app.controller('Applicant', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.form.talent_acquisition_pk){
+                if(a[i].pk == $scope.form.talent_acquisitions_pk){
                     ticked = true;
                 }
 
@@ -536,7 +573,7 @@ app.controller('Applicant', function(
             for(var i in a){
                 var ticked = false;
                 
-                if(a[i].pk == $scope.form.status_pk){
+                if(a[i].pk == $scope.form.statuses_pk){
                     ticked = true;
                 }
 
@@ -613,7 +650,7 @@ app.controller('Applicant', function(
             var promise = ApplicantsFactory.update_cv(data);
             promise.then(function(data){
                 get_applicant_details();
-                get_applicant_remarks();
+                //get_applicant_remarks();
 
                 $scope.display['cv'].text = true;
                 $scope.display['cv'].input = false;
@@ -675,7 +712,7 @@ app.controller('Applicant', function(
             var promise = ApplicantsFactory.update(data);
             promise.then(function(data){
                 get_applicant_details();
-                get_applicant_remarks();
+                //get_applicant_remarks();
             })
         });
     }

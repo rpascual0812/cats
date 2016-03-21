@@ -97,11 +97,7 @@ app.controller('Request', function(
 
     $scope.reset = function(){
         for(var i in $scope.data.jobpositions){
-            $scope.data.jobpositions.push({   
-                                        pk: $scope.data.jobpositions[i].pk,
-                                        name: $scope.data.jobpositions[i].position,
-                                        ticked: false
-                                    });
+            $scope.data.jobpositions[i].ticked = false;
         }
 
         $scope.form = {
@@ -143,13 +139,13 @@ app.controller('Request', function(
             });
         }
         else {
-            $scope.form.profile_pk = parseInt($scope.form.profile[0].pk);
+            $scope.form.job_positions_pk = $scope.form.job_position[0].pk;
             $scope.form.created_by = $scope.profile.pk;
 
             var promise = RequestFactory.submit($scope.form);
             promise.then(function(data){ 
                 UINotification.success({
-                                        message: 'New candidate successfully saved.', 
+                                        message: 'New requisition successfully saved.', 
                                         title: 'SUCCESS', 
                                         delay : 5000,
                                         positionY: 'top', positionX: 'right'
@@ -159,7 +155,7 @@ app.controller('Request', function(
             })
             .then(null, function(data){
                 UINotification.error({
-                                        message: 'An error occurred.  <pre> '+ data +' </pre>', 
+                                        message: 'An error occurred.  <pre> '+ JSON.stringify(data) +' </pre>', 
                                         title: 'FAILED', 
                                         delay : 5000,
                                         positionY: 'top', positionX: 'right'
