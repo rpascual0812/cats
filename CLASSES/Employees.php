@@ -113,7 +113,7 @@ EOT;
                     title,
                     array_to_string(department, ',') as department,
                     roles_pk,
-                    supervisor,
+                    (select employee from employees_permission as A where A.employees_pk = employees_permission.supervisor) as supervisor,
                     (select role from roles where pk = roles_pk) as role,
                     permission
                 from employees_permission
