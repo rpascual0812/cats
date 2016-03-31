@@ -116,6 +116,35 @@ alter table sources owner to cats;
 create unique index source_idx on sources (source);
 COMMENT ON COLUMN sources.source is 'SOURCE';
 
+create table requisitions
+(
+	pk serial primary key,
+	requisition_id text not null,
+	alternate_title text,
+	job_positions_pk int not null references job_positions(pk),
+	total int not null,
+	end_date timestamptz,
+	created_by int references employees_permission(employees_pk),
+	date_created timestamptz default now(),
+	archived boolean default false
+);
+alter table requisitions owner to cats;
+create unique index requisitions_unique_idx on requisitions (requisition_id);
+COMMENT ON COLUMN requisitions.job_positions_pk is 'Job Position';
+COMMENT ON COLUMN requisitions.total is 'TOTAL';
+COMMENT ON COLUMN requisitions.end_date is 'END DATE';
+COMMENT ON COLUMN requisitions.archived is 'STATUS';
+
+create table requisitions_logs
+(
+	requisitions_pk int references requisitions(pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table requisitions_logs owner to cats;
+
 create table applicants
 (
 	pk serial primary key,
@@ -264,34 +293,7 @@ create table sources_logs
 );
 alter table sources_logs owner to cats;
 
-create table requisitions
-(
-	pk serial primary key,
-	requisition_id text not null,
-	alternate_title text,
-	job_positions_pk int not null references job_positions(pk),
-	total int not null,
-	end_date timestamptz,
-	created_by int references employees_permission(employees_pk),
-	date_created timestamptz default now(),
-	archived boolean default false
-);
-alter table requisitions owner to cats;
-create unique index requisitions_unique_idx on requisitions (requisition_id);
-COMMENT ON COLUMN requisitions.job_positions_pk is 'Job Position';
-COMMENT ON COLUMN requisitions.total is 'TOTAL';
-COMMENT ON COLUMN requisitions.end_date is 'END DATE';
-COMMENT ON COLUMN requisitions.archived is 'STATUS';
 
-create table requisitions_logs
-(
-	requisitions_pk int references requisitions(pk),
-	type text not null,
-	details text not null,
-	created_by int not null,
-	date_created timestamptz default now()
-);
-alter table requisitions_logs owner to cats;
 
 create trigger insertlogs before update on applicants for each row execute procedure insertlogs();
 create trigger insertlogs before update on applicants_tags for each row execute procedure insertlogs();
