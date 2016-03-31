@@ -153,7 +153,7 @@ create table applicants
 	sources_pk int not null references sources(pk),
 	created_by int not null,
 	date_created timestamptz default now(),
-	date_recieved timestamptz not null,
+	date_received timestamptz not null,
 	talent_acquisition int not null,
 	date_interaction timestamptz,
 	time_completed timestamptz,
