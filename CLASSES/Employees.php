@@ -65,7 +65,7 @@ EOT;
                         employees.middle_name,
                         employees.last_name,
                         employees.email_address,
-                        employees_titles.title_pk
+                        employees_titles.titles_pk
                     from employees
                     left join employees_titles on (employees.pk = employees_titles.employees_pk)
                     where employees.archived = false
@@ -100,6 +100,30 @@ EOT;
         return ClassParent::get($sql);
     }
 
+    public function employees_permissions($data){
+        foreach($data as $k=>$v){
+            $data[$k] = pg_escape_string(trim(strip_tags($v)));
+        }
+
+        $sql = <<<EOT
+                select 
+                    employees_pk,
+                    employee_id,
+                    employee,
+                    title,
+                    array_to_string(department, ',') as department,
+                    roles_pk,
+                    supervisor,
+                    (select role from roles where pk = roles_pk) as role,
+                    permission
+                from employees_permission
+                order by employee
+                ;
+EOT;
+
+        return ClassParent::get($sql);
+    }
+
     public function permissions($data){
         foreach($data as $k=>$v){
             $data[$k] = pg_escape_string(trim(strip_tags($v)));
@@ -111,8 +135,8 @@ EOT;
                     employees_pk,
                     employee_id,
                     employee,
-                    role,
-                    array_to_string(permission, '||') as permission
+                    roles_pk,
+                    permission
                 from employees_permission
                 where md5(employees_pk::text) = '$employees_pk'
                 ;
@@ -181,8 +205,36 @@ EOT;
                     first_name,
                     last_name,
                     middle_name,
-                    first_name||' '||middle_name||' '||last_name||' ('||employee_id||')' as name,
-                    email_address
+                    first_name||' '||middle_name||' '||last_name as name,
+                    -- first_name||' '||middle_name||' '||last_name||' ('||employee_id||')' as name,
+                    email_address,
+                    (
+                        select
+                            titles.title
+                        from employees_titles
+                        left join titles on (employees_titles.titles_pk = titles.pk)
+                        where employees_pk = employees.pk
+                        order by employees_titles.date_created desc limit 1
+                    ) as title,
+                    (
+                        with Q as
+                        (
+                            select
+                                unnest(A.department) as departments_pk
+                            from employees as A
+                            where A.pk = employees.pk 
+                        )
+                        select
+                            array_to_string(array_agg(department),',')
+                        from Q
+                        left join departments on (pk = Q.departments_pk)
+                    ) as department,
+                    (
+                        select
+                            supervisor_pk
+                        from groupings
+                        where employees_pk = employees.pk
+                    ) as supervisor
                 from employees
                 where archived = false
                 and (

@@ -44,12 +44,26 @@ create table employees_permission
 	employees_pk int not null,
 	employee_id text not null,
 	employee text not null,
-	role int references roles(pk),
-	permission text[] not null
+	title text not null,
+	department text[] not null,
+	supervisor int not null,
+	roles_pk int references roles(pk),
+	permission json not null
 );
 alter table employees_permission owner to cats;
 create unique index employees_pk_idx on employees_permission (employees_pk);
 create unique index employees_id_idx on employees_permission (employee_id);
+COMMENT ON COLUMN employees_permission.roles_pk is 'ROLE';
+
+create table employees_permission_logs
+(
+	employees_pk int references employees_permission(employees_pk),
+	type text not null,
+	details text not null,
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table employees_permission_logs owner to cats;
 
 create table talent_acquisition_group
 (

@@ -239,7 +239,6 @@ app.controller('Tracker', function(
 	}
 
     function submit_applicant(){
-        console.log($scope.form);
         $scope.form.created_by = $scope.profile.pk;
 
         if($scope.form.requisition[0]){

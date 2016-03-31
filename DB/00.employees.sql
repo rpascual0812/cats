@@ -48,7 +48,7 @@ alter table titles owner to chrs;
 create table employees_titles
 (
 	employees_pk int references employees(pk),
-	title_pk int references titles(pk),
+	titles_pk int references titles(pk),
 	created_by int references employees(pk),
 	date_created timestamptz default now()
 );

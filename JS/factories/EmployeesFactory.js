@@ -35,6 +35,40 @@ app.factory('EmployeesFactory', function($http){
         return promise;
     };
 
+    factory.employees_permissions = function(data){
+        var promise = $http({
+            url:'./FUNCTIONS/Employees/employees_permissions.php',
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
+            data : data
+        })
+
+        return promise;
+    };
+
+    factory.individual_permission = function(data){
+        var promise = $http({
+            url:'./FUNCTIONS/Employees/individual_permission.php',
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
+            data : data
+        })
+
+        return promise;
+    };
+
     factory.permissions = function(data){
         var promise = $http({
             url:'./FUNCTIONS/Employees/permissions.php',

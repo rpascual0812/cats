@@ -23,6 +23,8 @@ app.controller('Applicant', function(
     $scope.post = '';
 
     $scope.remarks = {};
+    $scope.remarks_count = 0;
+    $scope.remarks_status = true;
 
     $scope.profile = {};
     $scope.applicant = {};
@@ -132,6 +134,7 @@ app.controller('Applicant', function(
             $scope.pk = data.data[_id];
 
             get_applicant_details();
+            
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -281,12 +284,36 @@ app.controller('Applicant', function(
 
     function get_applicant_remarks(){
         var filter = {
-            applicants_pk : $scope.applicant.pk
+            applicants_pk : $scope.applicant.pk,
+            offset : $scope.remarks_count
         };
 
         var promise = ApplicantsFactory.applicant_remarks(filter);
         promise.then(function(data){
             $scope.remarks = data.data.result;
+        })
+        .then(null, function(data){
+            $scope.remarks_status = false;
+        });
+    }
+
+    $scope.more_remarks = function(){
+        $scope.remarks_count+=10;
+
+        var filter = {
+            applicants_pk : $scope.applicant.pk,
+            offset : $scope.remarks_count
+        };
+
+        var promise = ApplicantsFactory.applicant_remarks(filter);
+        promise.then(function(data){
+            var a = data.data.result;
+
+            for(var i in a)
+                $scope.remarks.push(a[i]);
+        }) 
+        .then(null, function(data){
+            $scope.remarks_status = false;
         });
     }
 
@@ -294,9 +321,9 @@ app.controller('Applicant', function(
         $scope.display[col].text = false;
         $scope.display[col].input = true;
                 
-        $('#formedit_datereceived').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+        // $('#formedit_datereceived').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
 
-        $('.icon-close').hide();
+        // $('.icon-close').hide();
     }
 
     $scope.cancel_edit = function(col){
@@ -339,34 +366,6 @@ app.controller('Applicant', function(
                     if(contains(dropdowns, col)){
                         txt = $scope.form[col][0].name;
                     }
-                    // if(col == "job_position"){
-                    //     for(var i in $scope.data.jobpositions){
-                    //         if($scope.data.jobpositions[i].pk == $scope.form[col][0].pk){
-                    //             txt = $scope.data.jobpositions[i].position;
-                    //         }
-                    //     }
-                    // }
-                    // else if(col == "client"){
-                    //     for(var i in $scope.data.clients){
-                    //         if($scope.data.clients[i].pk == $scope.form[col][0].pk){
-                    //             txt = $scope.data.clients[i].client;
-                    //         }
-                    //     }
-                    // }
-                    // else if(col == "status"){
-                    //     for(var i in $scope.data.statuses){
-                    //         if($scope.data.statuses[i].pk == $scope.form[col][0].pk){
-                    //             txt = $scope.data.statuses[i].status;
-                    //         }
-                    //     }
-                    // }
-                    // else if(col == "source"){
-                    //     for(var i in $scope.data.sources){
-                    //         if($scope.data.sources[i].pk == $scope.form[col][0].pk){
-                    //             txt = $scope.data.sources[i].source;
-                    //         }
-                    //     }
-                    // }
                     else if(col == "name"){
                         txt = $scope.form['first_name'] +" "+ $scope.form['last_name'];
                     }
@@ -395,7 +394,7 @@ app.controller('Applicant', function(
             //console.log('resolved:' + value);
         }, function(value){
             var data = {};
-
+            
             if(typeof($scope.form[col]) == 'object'){
                 if(col == "job_position"){
                     data['job_positions_pk'] = $scope.form[col][0].pk;
@@ -704,7 +703,7 @@ app.controller('Applicant', function(
             //save
             var data = {
                 applicant_id : $scope.applicant.applicant_id,
-                status : parseInt($scope.form[col][0].pk),
+                statuses_pk : parseInt($scope.form[col][0].pk),
                 remarks : $scope.modal.data.remarks,
                 employees_pk : parseInt($scope.profile.pk)
             };

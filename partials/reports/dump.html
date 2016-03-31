@@ -88,42 +88,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <!-- 
-                <table id="datatables-example" class="report table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Date Received</th>
-                            <th>Time Received</th>
-                            <th>Date Submitted</th>
-                            <th>Source</th>
-                            <th>Sourcer</th>
-                            <th>Name</th>
-                            <th>Birth Date</th>
-                            <th>Profiled For</th>
-                            <th>Client</th>
-                            <th>Talent Acquisition</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr ng-repeat="(k, v) in dumpdata" ng-click="edit_applicant(k)" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Click to view">
-                            <td>{{v.date_received}}</td>
-                            <td>{{v.time_received}}</td>
-                            <td>{{v.date_created}}</td>
-                            <td>{{v.source}}</td>
-                            <td>{{v.created_by}}</td>
-                            <td>{{v.first_name +" "+v.last_name}}</td>
-                            <td>{{v.birthdate}}</td>
-                            <td>{{v.profiled_for}}</td>
-                            <td>{{v.client}}</td>
-                            <td>{{v.talent_acquisition}}</td>
-                            <td>{{v.status}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                -->
             </div>
         </div>
     </div>
@@ -132,10 +96,6 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        //$('#datatables-example').DataTable();
-
-        $('#datatables-example_filter').hide();
-
         $('#datefrom').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
         $('#dateto').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
     });

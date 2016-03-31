@@ -38,24 +38,31 @@ app.controller('Notifications', function(
     }
 
     function changeDocumentTitle(newtitle, count){
-        var mod = count % 2;
-        count++;
+        // var to = $timeout(function() {
+        //     $timeout.cancel(to);
+        //     changeDocumentTitle(newtitle, count);
+        // }, 1500);
+
+        clearInterval(timeinterval);
+
+        function updateClock(){
+            var mod = count % 2;
+            count++;
+            
+            if(count == 100){
+                count = 0;
+            }
+
+            if(mod == 0){
+                document.title = newtitle;
+            }
+            else {
+                document.title = $scope.original_title;
+            }
+        }
         
-        if(count == 100){
-            count = 0;
-        }
-
-        if(mod == 0){
-            document.title = newtitle;
-        }
-        else {
-            document.title = $scope.original_title;
-        }
-
-        var to = $timeout(function() {
-            $timeout.cancel(to);
-            changeDocumentTitle(newtitle, count);
-        }, 1500);
+        var timeinterval = setInterval(updateClock, 1500);
+        updateClock();
     }
 
     function get_permission(){
@@ -65,13 +72,14 @@ app.controller('Notifications', function(
 
         var promise = EmployeesFactory.permissions(filters);
         promise.then(function(data){
-            var a = data.data.result[0];
+            $scope.permissions = JSON.parse(data.data.result[0].permission);
+            // var a = data.data.result[0];
 
-            var permissions = a.permission.split('||');
+            // var permissions = a.permission.split('||');
 
-            for(var i in permissions){
-                $scope.permissions[permissions[i]] = true;
-            }
+            // for(var i in permissions){
+            //     $scope.permissions[permissions[i]] = true;
+            // }
         })   
     }
 

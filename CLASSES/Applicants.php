@@ -239,6 +239,31 @@ EOT;
                     applicant_id,
                     applicants.sources_pk,
                     (select source from sources where pk = applicants.sources_pk::int) as source,
+                    requisitions_pk,
+                    (
+                        select
+                            requisition_id
+                        from requisitions
+                        where requisitions.pk = requisitions_pk
+                    ) as requisition_id,
+                    (
+                        select
+                            position
+                        from requisitions
+                        left join job_positions on (requisitions.job_positions_pk = job_positions.pk)
+                        where requisitions.pk = requisitions_pk
+                    ) as requisition_job_position,
+                    (
+                         select 
+                              case when alternate_title != ''
+                              then alternate_title 
+                              when alternate_title is null
+                              then alternate_title 
+                              else (select position from job_positions where job_positions.pk = job_positions_pk) 
+                              end 
+                         from requisitions
+                         where requisitions.pk = applicants.requisitions_pk
+                    ) as requisition,
                     created_by,
                     date_created::timestamp(0) as date_created,
                     date_received::date as date_received,
@@ -314,7 +339,7 @@ EOT;
         return ClassParent::update($sql);
     }
 
-    public function update($data){
+    public function update($data){        
         $remarks = pg_escape_string(trim(strip_tags($data['remarks'])));
         $employees_pk = pg_escape_string(trim(strip_tags($data['employees_pk'])));
         $applicant_id = pg_escape_string(trim(strip_tags($data['applicant_id'])));
@@ -547,7 +572,8 @@ EOT;
         foreach($data as $k=>$v){
             $data[$k] = pg_escape_string(trim(strip_tags($v)));
         }
-
+        
+        $offset = $data['offset'];
         $applicants_pk = $data['applicants_pk'];
         $sql = <<<EOT
                 select
@@ -558,6 +584,7 @@ EOT;
                 from applicants_logs
                 where applicants_pk = $applicants_pk
                 order by date_created desc, applicants_pk desc
+                offset $offset limit 10
                 ;
 EOT;
         
@@ -573,7 +600,13 @@ EOT;
 
         $where = '';
         foreach ($data as $key => $value) {
-            $where .= " and applicants." . $key . " = " . $value;
+            if($key == "department"){
+                $where .= " and employees_permission." . $key . " && '{" . $value ."}'";
+            }
+            else {
+                $where .= " and applicants." . $key . " = " . $value;    
+            }
+            
         }
 
         $sql = <<<EOT
@@ -581,9 +614,9 @@ EOT;
                     sum(case when statuses.status = 'For Processing' then 1 else 0 end) as pending,
                     sum(case when statuses.status != 'For Processing' then 1 else 0 end) as processed
                 from applicants
-                left join applicants_status on (applicants.pk = applicants_status.applicants_pk)
-                left join statuses on (applicants_status.status = statuses.pk)
-                where applicants_status.date_created between '$datenow'::timestamptz and '$datenow'::timestamptz + interval '1 month' - interval '1 millisecond'
+                left join statuses on (applicants.statuses_pk = statuses.pk)
+                left join employees_permission on (applicants.created_by = employees_permission.employees_pk)
+                where applicants.date_created between '$datenow'::timestamptz and '$datenow'::timestamptz + interval '1 month' - interval '1 millisecond'
                 $where
                 ;
 EOT;

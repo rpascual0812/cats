@@ -1,10 +1,9 @@
+<!-- start: Content -->
 <style type="text/css">
-.searchinput {
-    border: 1px solid #2196f3;
-    background-color: #e1f2fe !important;
+.checkBoxContainer {
+    font-size: 13px !important;
 }
 </style>
-<!-- start: Content -->
 <div id="content">
     <div class="panel box-shadow-none content-header">
         <div class="panel-body">
@@ -14,129 +13,68 @@
                     Administration <span class="fa-angle-right fa"></span> Permission
                 </p>
             </div>
-            <div style="text-align:right;">
-                <a>
-                    <button ng-click="reset()" class=" btn btn-circle btn-outline btn-warning" value="primary" data-toggle="tooltip" data-placement="top" title="RESET">
-                        <span class="fa fa-refresh"></span>
-                    </button>
-                </a>
-
-                <a>
-                    <button ng-disabled="(employees_permissions.length>0)?false:true" ng-click="save()" class=" btn btn-circle btn-outline btn-primary" value="primary" data-toggle="tooltip" data-placement="top" title="SAVE">
-                        <span class="fa fa-save"></span>
-                    </button>
-                </a>
-            </div>
         </div>
     </div>
     <div class="panel">
         <div class="panel-body">
-            <div class="col-md-12">
-                <div 
-                    angucomplete-alt
-                    placeholder="Type here to search employees"
-                    maxlength="50"
-                    pause="500"
-                    selected-object="employee_selected"
-                    remote-url="./FUNCTIONS/Employees/search.php?text="
-                    search-fields="name"
-                    title-field="name"
-                    minlength="1" 
-                    input-class="form-control form-control-small" 
-                    match-class="highlight"
-                    template-url="autocomplete"
-                    class="searchinput"
-                >
+            <div>
+                <h4>
+                    <div>
 
-            </div>
-            <div class="col-md-12">
-                <h3>System Role</h3>
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <td>
-                            <!-- <select>
-                                <option ng-repeat="(k,v) in roles" value="v.pk">{{v.role}}</option>
-                            </select> -->
-
-                            <div
-                                isteven-multi-select
-                                input-model="roles"
-                                output-model="employees_role"
-                                button-label="icon name"
-                                item-label="icon name maker"
-                                tick-property="ticked"
-                                selection-mode="single"
-                                style="width:295px;"
-                                ng-class="formerror.source"
-                                max-height="200px"
-                                is-disabled="(search.pk)?false:true"
+                        <div style="float:left; width:400px;">
+                            <!-- <input ng-model="filter.keyword" type="text" style="width:520px;"/> -->
+                            <div 
+                                angucomplete-alt
+                                placeholder="Search employees here..."
+                                maxlength="50"
+                                pause="500"
+                                selected-object="employee_selected"
+                                remote-url="./FUNCTIONS/Employees/search.php?text="
+                                search-fields="name"
+                                title-field="name"
+                                minlength="1" 
+                                input-class="form-control form-control-small" 
+                                match-class="highlight"
+                                template-url="autocomplete"
+                                class="searchinput"
                             >
                             </div>
-                        </td>
-                    </tr>
-                </table>
-                <div style="width:100%; height:30px;"></div>
-                <h3>Tracker</h3>
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <td>
-                            <span ng-repeat="(k, v) in permissions.Tracker" style="margin-left: 10px;">
-                                <div class="form-group form-animate-checkbox">
-                                    <input 
-                                        id="{{v}}" 
-                                        type="checkbox" 
-                                        class="checkbox" 
-                                        ng-click="update_permission(v)" 
-                                        ng-checked="contains(employees_permissions, v)"
-                                        ng-disabled="(search.pk)?false:true"
-                                    />
-                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
-                                </div>
-                            </span>        
-                        </td>
-                    </tr>
-                </table>
-                <div style="width:100%; height:30px;"></div>
-                <h3>Reports</h3>
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <td>
-                            <span ng-repeat="(k, v) in permissions.Reports" style="margin-left: 10px;">
-                                <div class="form-group form-animate-checkbox">
-                                    <input 
-                                        id="{{v}}" 
-                                        type="checkbox" 
-                                        class="checkbox" 
-                                        ng-click="update_permission(v)" 
-                                        ng-checked="contains(employees_permissions, v)"
-                                        ng-disabled="(search.pk)?false:true"
-                                    />
-                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
-                                </div>
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-                <div style="width:100%; height:30px;"></div>
-                <h3>Admin</h3>
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <td>
-                            <span ng-repeat="(k, v) in permissions.Admin" style="margin-left: 10px;">
-                                <div class="form-group form-animate-checkbox">
-                                    <input 
-                                        id="{{v}}" 
-                                        type="checkbox" 
-                                        class="checkbox" 
-                                        ng-click="update_permission(v)" 
-                                        ng-checked="contains(employees_permissions, v)"
-                                        ng-disabled="(search.pk)?false:true"
-                                    />
-                                    <label for="{{v}}" style="padding-left: 10px;"> {{v}} </label>
-                                </div>
-                            </span>
-                        </td>
-                    </tr>
+                        </div>
+                        
+                        <div style="float:left; width: 300px; margin-left: 10px;">
+                            <!-- <input type="button" class="btn btn-primary" value="SEARCH" ng-click="DUMP()" /> -->
+                        </div>
+                    </div>
+                </h4>
+            </div>
+            <div style="height:50px; width:100%;">
+
+            </div>
+            <div class="responsive-table">
+                
+                <table datatable="ng" class="row-border hover report table table-striped table-bordered" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Employee Name</th>
+                            <th>Employee Title</th>
+                            <th>Department</th>
+                            <th>Immediate Supervisor</th>
+                            <th>System Role</th>
+                            <!-- <th>Options</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(k, v) in employees.list" ng-click="EDIT(k)" data-toggle="tooltip" data-placement="top">
+                            <td>{{v.employee_id}}</td>
+                            <td>{{v.employee}}</td>
+                            <td>{{v.title}}</td>
+                            <td>{{v.department}}</td>
+                            <td>{{v.supervisor}}</td>
+                            <td>{{v.role}}</td>
+                            <!-- <td>{{v.processing}}</td> -->
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -144,12 +82,165 @@
 </div>
 <!-- end: content -->
 
-<script type="text/javascript">
-    $(document).ready(function(){
-
-    });
+<script type="text/ng-template" id="PermissionModal">
+    <div class="ngdialog-message">
+        <div style="margin-top: -15px;">
+            <h3><span style="color:#0c79be;">{{ modal.title }}</span></h3>
+        </div>
+        <div style="max-height: 300px; overflow-y:auto;">
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td style="width:150px;">System Role </td>
+                    <td>
+                        <div
+                            isteven-multi-select
+                            input-model="data.roles"
+                            output-model="modal.role"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked"
+                            selection-mode="single"
+                            max-height="200px"
+                            max-width:"300px"
+                        >
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr>
+                                <td>Detailed Permissions: </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="chk-requisitions" style="width:18px;height:18px;" data-ng-checked="modal.permission.Requisitions.Menu" data-ng-click="update_permission()" data-ng-model="modal.permission.Requisitions.Menu"/> 
+                                    <label for="chk-requisitions">Requisitions</label>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-requisitions-new" style="width:18px;height:18px;" data-ng-checked="modal.permission.Requisitions.Modules.New" data-ng-click="update_permission()" data-ng-model="modal.permission.Requisitions.Modules.New"/> 
+                                    <label for="chk-requisitions-new">New</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="chk-requisitions-list" style="width:18px;height:18px;" data-ng-checked="modal.permission.Requisitions.Modules.List" data-ng-click="update_permission()" data-ng-model="modal.permission.Requisitions.Modules.List"/> 
+                                    <label for="chk-requisitions-list">List</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-candidates" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Menu" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Menu"/> 
+                                    <label for="chk-candidates">Candidates</label>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-new" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Modules.New" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Modules.New"/> 
+                                    <label for="chk-candidates-new">New</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-list" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Modules.List" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Modules.List"/> 
+                                    <label for="chk-candidates-list">List</label>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-date_appointment" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Functions.Date_appointment" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Functions.Date_appointment"/> 
+                                    <label for="chk-candidates-date_appointment">Update Date of Appointment</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-date_endorsement" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Functions.Date_endorsement" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Functions.Date_endorsement"/> 
+                                    <label for="chk-candidates-date_endorsement">Update Date of Endorsement</label>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-status" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Functions.Status" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Functions.Status"/> 
+                                    <label for="chk-candidates-status">Update Applicant Status</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="chk-candidates-talent_acquisition" style="width:18px;height:18px;" data-ng-checked="modal.permission.Candidates.Functions.Talent_acquisition" data-ng-click="update_permission()" data-ng-model="modal.permission.Candidates.Functions.Talent_acquisition"/> 
+                                    <label for="chk-candidates-talent_acquisition">Change Assigned Talent Acquisition</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="chk-reports" style="width:18px;height:18px;" data-ng-checked="modal.permission.Reports.Menu" data-ng-click="update_permission()" data-ng-model="modal.permission.Reports.Menu"/> 
+                                    <label for="chk-reports">Reports</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-reports-productivity" style="width:18px;height:18px;" data-ng-checked="modal.permission.Reports.Modules.Productivity" data-ng-click="update_permission()" data-ng-model="modal.permission.Reports.Modules.Productivity"/> 
+                                    <label for="chk-reports-productivity">Productivity</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="chk-admin" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Menu" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Menu"/> 
+                                    <label for="chk-admin">Admin</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-admin-permission" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Modules.Permission" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Modules.Permission"/> 
+                                    <label for="chk-admin-permission">Permission</label>
+                                </td>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-admin-clients" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Modules.Clients" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Modules.Clients"/> 
+                                    <label for="chk-admin-clients">Clients</label>
+                                </td>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-admin-sources" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Modules.Sources" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Modules.Sources"/> 
+                                    <label for="chk-admin-sources">Sources</label>
+                                </td>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-admin-job_position" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Modules.Job_position" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Modules.Job_position"/> 
+                                    <label for="chk-admin-job_position">Job_position</label>
+                                </td>
+                                <td style="padding-left:15px;">
+                                    <input type="checkbox" id="chk-admin-groups" style="width:18px;height:18px;" data-ng-checked="modal.permission.Admin.Modules.Groups" data-ng-click="update_permission()" data-ng-model="modal.permission.Admin.Modules.Groups"/>
+                                    <label for="chk-admin-groups">Groups</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">Remarks </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <textarea cols="70" rows="5" ng-model="modal.remarks"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" data-ng-click="confirm(1)">{{modal.close}}</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="closeThisDialog('Save')">{{modal.save}}</button>
+    </div>
 </script>
-<!-- end: Javascript -->
 
 <script type="text/ng-template" id="autocomplete">
     <div class="angucomplete-holder" ng-class="{'angucomplete-dropdown-visible': showDropdown}">

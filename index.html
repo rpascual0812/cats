@@ -197,6 +197,7 @@
         <!-- start:Left Menu -->
         <div id="left-menu">
             <div class="sub-left-menu scroll">
+
                 <ul class="nav nav-list">
                     <li>
                         <!-- <div class="left-bg" style="margin-top:10px;"></div> -->
@@ -220,30 +221,54 @@
                     </li> -->
                     
                     <!-- <li class="ripple" ng-if="permissions['New Candidate Form']"><a href="#/tracker"><span class="fa fa-pencil-square"></span>Tracker</a></li> -->
-                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-bullhorn"></span> Requisitions <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                    <li class="ripple" ng-show="permissions.Requisitions.Menu">
+                        <a class="tree-toggle nav-header"><span class="fa fa-bullhorn"></span> Requisitions <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li ng-if="permissions['Candidates']"><a href="#/request/new">New</a></li>
-                            <li ng-if="permissions['Candidates']"><a href="#/request/list">List</a></li>
+                            <li ng-show="permissions.Requisitions.Modules.New">
+                                <a href="#/request/new">New</a>
+                            </li>
+                            <li ng-show="permissions.Requisitions.Modules.List">
+                                <a href="#/request/list">List</a>
+                            </li>
                         </ul>
                     </li>
-                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-group"></span> Candidates  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                    <li class="ripple" ng-show="permissions.Candidates.Menu">
+                        <a class="tree-toggle nav-header"><span class="fa fa-group"></span> Candidates  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li ng-if="permissions['Candidates']"><a href="#/candidate/new">New</a></li>
-                            <li ng-if="permissions['Candidates']"><a href="#/candidates/list">List</a></li>
+                            <li ng-show="permissions.Candidates.Modules.New">
+                                <a href="#/candidate/new">New</a>
+                            </li>
+                            <li ng-show="permissions.Candidates.Modules.List">
+                                <a href="#/candidates/list">List</a>
+                            </li>
                         </ul>
                     </li>
-                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-area-chart"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                    <li class="ripple" ng-show="permissions.Reports.Menu">
+                        <a class="tree-toggle nav-header"><span class="fa fa-area-chart"></span> Reports  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li ng-if="permissions['Candidates']"><a href="#/candidate/new">Productivity</a></li>
+                            <li ng-show="permissions.Reports.Modules.Productivity">
+                                <a href="#/candidate/new">Productivity</a>
+                            </li>
                         </ul>
                     </li>
-                    <li class="ripple"><a class="tree-toggle nav-header"><span class="fa fa-cogs"></span> Admin  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
+                    <li class="ripple" ng-show="permissions.Admin.Menu">
+                        <a class="tree-toggle nav-header"><span class="fa fa-cogs"></span> Admin  <span class="fa-angle-right fa right-arrow text-right"></span> </a>
                         <ul class="nav nav-list tree">
-                            <li ng-if="permissions['Permission']"><a href="#/admin/permission">Permission</a></li>
-                            <li><a href="#/admin/clients">Clients</a></li>
-                            <li><a href="#/admin/sources">Sources</a></li>
-                            <li><a href="#/admin/profiles">Profiles</a></li>
-                            <li><a href="#/admin/groups">Groups</a></li>
+                            <li ng-show="permissions.Admin.Modules.Permission">
+                                <a href="#/admin/permission">Permission</a>
+                            </li>
+                            <li ng-show="permissions.Admin.Modules.Clients">
+                                <a href="#/admin/clients">Clients</a>
+                            </li>
+                            <li ng-show="permissions.Admin.Modules.Sources">
+                                <a href="#/admin/sources">Sources</a>
+                            </li>
+                            <li ng-show="permissions.Admin.Modules.Job_positions">
+                                <a href="#/admin/profiles">Job Positions</a>
+                            </li>
+                            <li ng-show="permissions.Admin.Modules.Groups">
+                                <a href="#/admin/groups">Groups</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="ripple"><a href="#/calendar"><span class="fa fa-calendar-o"></span>Calendar</a></li>
