@@ -188,6 +188,9 @@ app.controller('Permission', function(
 
             get_roles(a.roles_pk);
         })
+        .then(null, function(data){
+            get_roles(null);
+        })
     }
 
     function get_roles(pk){
