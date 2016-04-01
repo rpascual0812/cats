@@ -56,7 +56,8 @@ class Applicants extends ClassParent {
                 contact_number,
                 email_address,
                 clients_pk,
-                cv
+                cv,
+                statuses_pk
             )
             values
             (
@@ -73,7 +74,8 @@ class Applicants extends ClassParent {
                 '$this->contact_number',
                 '$this->email_address',
                 '$this->clients_pk',
-                '$this->cv'
+                '$this->cv',
+                (select pk from statuses where status = 'For Processing')
             );
             --insert into applicants_status
             --(
