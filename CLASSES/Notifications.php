@@ -39,7 +39,6 @@ class Notifications extends ClassParent {
 
         $sql = <<<EOT
                 select
-                    pk,
                     employees_pk,
                     notification,
                     type,
