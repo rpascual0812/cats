@@ -116,30 +116,65 @@
             }
 
             function login(){
+                // var error=0;
+                // var empid = $('#employee_id').val();
+                // var pass = $('#employee_password').val();
+
+                // $.ajax('FUNCTIONS/Employees/authentication.php', {
+                //     type: "POST",
+                //     data: { empid : empid, password : pass },
+                //     statusCode: {
+                //         403: function(response){
+                //             $('#div-message').empty().show().append(response.responseText);
+                //             $('#div-message').addClass('error-message');
+                //             setTimeout(hidemessage, 2000);
+                //         }
+                //     },
+                //     success: function(data){
+                //         window.location = window.location.href.replace('login.html','');
+                //         // if(data.permission.Menu.Tracker){
+                //         //     window.location = window.location.href.replace('login.html','#/tracker/pending');
+                //         // }
+                //         // else {
+                //         //    window.location = window.location.href.replace('login.html','');
+                //         //}
+                //     }
+                // });
                 var error=0;
                 var empid = $('#employee_id').val();
                 var pass = $('#employee_password').val();
 
-                $.ajax('FUNCTIONS/Employees/authentication.php', {
-                    type: "POST",
-                    data: { empid : empid, password : pass },
-                    statusCode: {
-                        403: function(response){
-                            $('#div-message').empty().show().append(response.responseText);
-                            $('#div-message').addClass('error-message');
-                            setTimeout(hidemessage, 2000);
+                if(empid.replace(/\s/g,'') == "" || pass.replace(/\s/g,'') == ""){
+                    $('#div-message').empty().show().append("Incorrect Employee ID and/or Password");
+                                
+                    setTimeout(function(){
+                        $('#div-message').empty().hide();
+                    }, 5000);
+                }
+                else {
+                    $.ajax('FUNCTIONS/Employees/authentication.php', {
+                        type: "POST",
+                        data: { empid : empid, password : pass },
+                        statusCode: {
+                            404: function(response){
+                                $('#div-message').empty().show().append("Incorrect Employee ID and/or Password");
+                                
+                                setTimeout(function(){
+                                    $('#div-message').empty().hide();
+                                }, 5000);
+                            }
+                        },
+                        success: function(data){
+                            window.location = window.location.href.replace('login.html','');
+                            // if(data.permission.Menu.Tracker){
+                            //     window.location = window.location.href.replace('login.html','#/tracker/pending');
+                            // }
+                            // else {
+                            //    window.location = window.location.href.replace('login.html','');
+                            //}
                         }
-                    },
-                    success: function(data){
-                        window.location = window.location.href.replace('login.html','');
-                        // if(data.permission.Menu.Tracker){
-                        //     window.location = window.location.href.replace('login.html','#/tracker/pending');
-                        // }
-                        // else {
-                        //    window.location = window.location.href.replace('login.html','');
-                        //}
-                    }
-                });
+                    });
+                }
             }
         </script>
     <!-- end: Javascript -->

@@ -207,7 +207,7 @@ alter table applicants_talent_acquisition owner to cats;
 create table applicants_endorser
 (
 	applicants_pk int references applicants(pk),
-	endorcement timestamptz,
+	endorsement timestamptz,
 	employees_pk int references employees_permission(employees_pk),
 	date_created timestamptz default now()
 );
