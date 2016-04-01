@@ -26,12 +26,10 @@ app.controller('ReportDump', function(
 	function session(){	
 		var promise = SessionFactory.getsession();
         promise.then(function(data){
-        	var _id = md5.createHash('id');
+        	var _id = md5.createHash('pk');
             $scope.pk = data.data[_id];
 
-            //get_profile();
-            getstatuses();
-            
+            get_profile();
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -46,6 +44,25 @@ app.controller('ReportDump', function(
         var promise = EmployeesFactory.profile(filters);
         promise.then(function(data){
             $scope.profile = data.data.result[0];
+
+            get_employees_permission();
+        })
+    }
+
+    function get_employees_permission(){
+        var filters = { 
+            'employees_pk' : $scope.profile.pk
+        };
+
+        var promise = EmployeesFactory.individual_permission(filters);
+        promise.then(function(data){
+            var a = data.data.result[0];
+
+            $scope.profile.title = a.title;
+            $scope.profile.role = a.role;
+            $scope.profile.department = a.department;
+
+            getstatuses();
         })   
     }
 
@@ -129,7 +146,10 @@ app.controller('ReportDump', function(
 	function DUMP(){
         $scope.dumpdata = {};
         
-        $scope.filter['new_status'] = $scope.filter.status[0].pk;
+        $scope.filter.employees_pk = $scope.profile.pk;
+        $scope.filter.new_status = $scope.filter.status[0].pk;
+        $scope.filter.department = $scope.profile.department;
+        $scope.filter.role = $scope.profile.role;
         
 		var promise = ReportsFactory.getdump($scope.filter);
         promise.then(function(data){

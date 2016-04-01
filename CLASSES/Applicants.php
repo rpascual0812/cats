@@ -151,7 +151,7 @@ EOT;
         foreach($data as $k=>$v){
             $data[$k] = pg_escape_string(trim(strip_tags($v)));
         }
-
+        
         $where="true";
         if($data['datetype'] == "Date Submitted"){
             $where .= " and date_created between '".$data['datefrom']." 0000' and '".$data['dateto']." 2359'";
@@ -162,6 +162,19 @@ EOT;
 
         if(isset($data['new_status'])){
             $where .= " and applicants.statuses_pk = ". $data['new_status'];
+        }
+
+        $arr = array('Administrator', 'Director', 'Manager');
+        if(!in_array($data['role'], $arr)){
+            $where .= " and employees_permission.department && '{".$data['department']."}'";
+        }
+
+        if($data['role'] == "Talent Acquisition"){
+            $where .= " and created_by in (select employees_pk from talent_acquisition_group where supervisor_pk = ".$data['employees_pk'].")";
+        }
+
+        if($data['role'] == "Sourcer"){
+            $where .= " and created_by = ". $data['employees_pk'];
         }
 
         $sql = <<<EOT
@@ -190,6 +203,7 @@ EOT;
                     cv,
                     (select statuses.status from applicants_status left join statuses on (applicants_status.status = statuses.pk) where applicants_pk = applicants.pk order by date_created desc limit 1) as status
                 from applicants
+                left join employees_permission on (applicants.created_by = employees_permission.employees_pk)
                 where $where
                 order by pk asc
                 ;
@@ -611,8 +625,8 @@ EOT;
 
         $sql = <<<EOT
                 select
-                    sum(case when statuses.status = 'For Processing' then 1 else 0 end) as pending,
-                    sum(case when statuses.status != 'For Processing' then 1 else 0 end) as processed
+                    coalesce(sum(case when statuses.status = 'For Processing' then 1 else 0 end), 0) as pending,
+                    coalesce(sum(case when statuses.status != 'For Processing' then 1 else 0 end), 0) as processed
                 from applicants
                 left join statuses on (applicants.statuses_pk = statuses.pk)
                 left join employees_permission on (applicants.created_by = employees_permission.employees_pk)

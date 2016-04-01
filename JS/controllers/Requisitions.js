@@ -43,6 +43,23 @@ app.controller('Requisitions', function(
         promise.then(function(data){
             $scope.profile = data.data.result[0];
 
+            get_employees_permission();
+        })   
+    }
+
+    function get_employees_permission(){
+        var filters = { 
+            'employees_pk' : $scope.profile.pk
+        };
+
+        var promise = EmployeesFactory.individual_permission(filters);
+        promise.then(function(data){
+            var a = data.data.result[0];
+
+            $scope.profile.title = a.title;
+            $scope.profile.role = a.role;
+            $scope.profile.department = a.department;
+
             DEFAULTDATES();
         })   
     }
@@ -116,6 +133,9 @@ app.controller('Requisitions', function(
     }
 
     $scope.DUMP = function(){
+        $scope.filter.employees_pk = $scope.profile.pk;
+        $scope.filter.department = $scope.profile.department;
+        $scope.filter.role = $scope.profile.role;
         var promise = RequestFactory.requisitions($scope.filter);
         promise.then(function(data){
             $scope.requisitions.status = true;
