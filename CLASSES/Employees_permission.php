@@ -46,7 +46,7 @@ EOT;
                     roles_pk,
                     permission
                 from employees_permission
-                where role in (select pk from roles where role = 'Talent Acquisition')
+                where roles_pk in (select pk from roles where role = 'Talent Acquisition')
                 ;
 EOT;
 
@@ -58,7 +58,7 @@ EOT;
             $data[$k] = pg_escape_string(trim(strip_tags($v)));
         }
 
-        $where = "where role in (select pk from roles where role = 'Sourcer')";
+        $where = "where roles_pk in (select pk from roles where role = 'Sourcer')";
         if($data['search'] != 'undefined'){
             $where .= " and employee ilike '%".$data['search']."%'";
         }
