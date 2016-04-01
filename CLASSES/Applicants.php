@@ -172,7 +172,7 @@ EOT;
         }
 
         if($data['role'] == "Talent Acquisition"){
-            $where .= " and created_by in (select employees_pk from talent_acquisition_group where supervisor_pk = ".$data['employees_pk'].")";
+            $where .= " and (created_by in (select employees_pk from talent_acquisition_group where supervisor_pk = ".$data['employees_pk'].") or created_by = ". $data['employees_pk'] .")";
         }
 
         if($data['role'] == "Sourcer"){
