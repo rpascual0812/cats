@@ -80,7 +80,7 @@ app.config(function($routeProvider){
     })
     .when('/calendar',
     {
-        controller: 'Tracker',
+        controller: 'Calendar',
         templateUrl: 'partials/calendar/index.html'
     })
     .otherwise(
