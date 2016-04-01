@@ -100,16 +100,16 @@ EOT;
 
         $where="true";
 
-        $arr = array('Administrator', 'Director', 'Manager');
-        if(!in_array($data['role'], $arr)){
-            $where .= " and employees_permission.department && '{".$data['department']."}'";
-        }        
-
-        if($data['role'] == "Talent Acquisition"){
-            $where .= " and created_by in (select employees_pk from talent_acquisition_group where supervisor_pk = ".$data['employees_pk'].")";
-        }
+        // $arr = array('Administrator', 'Director', 'Manager');
+        // if(!in_array($data['role'], $arr)){
+        //     $where .= " and employees_permission.department && '{".$data['department']."}'";
+        // }        
 
         if($data['role'] == "Sourcer"){
+            $where .= " and created_by in (select supervisor_pk from talent_acquisition_group where employees_pk = ".$data['employees_pk'].")";
+        }
+
+        if($data['role'] == "Talent Acquisition"){
             $where .= " and created_by = ". $data['employees_pk'];
         }
 
