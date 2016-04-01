@@ -89,7 +89,8 @@ EOT;
                     last_name,
                     email_address,
                     business_email_address,
-                    position,
+                    titles_pk,
+                    (select title from titles where pk = titles_pk) as position,
                     level
                 from employees
                 where archived = false
@@ -211,10 +212,8 @@ EOT;
                     (
                         select
                             titles.title
-                        from employees_titles
-                        left join titles on (employees_titles.titles_pk = titles.pk)
-                        where employees_pk = employees.pk
-                        order by employees_titles.date_created desc limit 1
+                        from titles
+                        where titles.pk = employees.titles_pk
                     ) as title,
                     (
                         with Q as

@@ -11,7 +11,7 @@ create table employees
 	last_name text not null,
 	email_address text not null,
 	business_email_address text not null,
-	position text not null,
+	position int not null,
 	level text not null,
 	department int[] not null,
 	archived boolean default false,
@@ -45,14 +45,14 @@ create table titles
 );
 alter table titles owner to chrs;
 
-create table employees_titles
-(
-	employees_pk int references employees(pk),
-	titles_pk int references titles(pk),
-	created_by int references employees(pk),
-	date_created timestamptz default now()
-);
-alter table employees_titles owner to chrs;
+-- create table employees_titles
+-- (
+-- 	employees_pk int references employees(pk),
+-- 	titles_pk int references titles(pk),
+-- 	created_by int references employees(pk),
+-- 	date_created timestamptz default now()
+-- );
+-- alter table employees_titles owner to chrs;
 
 create table time_log
 (

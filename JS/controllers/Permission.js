@@ -107,7 +107,7 @@ app.controller('Permission', function(
 
     $scope.employee_selected = function(data){
         $scope.search = data.description;
-
+        console.log($scope.search);
         get_employees_permission($scope.search.pk)
 
         
