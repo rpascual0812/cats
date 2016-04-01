@@ -11,7 +11,8 @@ app.controller('Tracker', function(
                                         md5,
                                         Upload, $timeout,
                                         UINotification,
-                                        ngDialog
+                                        ngDialog,
+                                        $routeParams
                                     ){
 
 	$scope.form = {
@@ -93,11 +94,16 @@ app.controller('Tracker', function(
                 else 
                     name = a[i].job_position;
 
+                var isticked = false;
+                if($routeParams.requisitions_pk && a[i].pk == $routeParams.requisitions_pk){
+                    isticked = true;
+                }
+
                 $scope.requisitions.push({
                                             pk: a[i].pk,
                                             requisition_id : a[i].requisition_id,
                                             name: name,
-                                            ticked: false
+                                            ticked: isticked
                                         });
             }
         })

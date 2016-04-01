@@ -23,6 +23,11 @@ app.config(function($routeProvider){
         controller: 'Tracker',
         templateUrl: 'partials/tracker/index.html'
     })
+    .when('/candidate/new/:requisitions_pk',
+    {
+        controller: 'Tracker',
+        templateUrl: 'partials/tracker/index.html'
+    })
     .when('/candidate/:id',
     {
         controller: 'Applicant',

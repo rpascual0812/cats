@@ -144,6 +144,9 @@ app.controller('Notifications', function(
             if(info.type == "applicants"){
                 window.location = "#/candidate/" + info.applicant_id;
             }
+            else if(info.type == "requisitions"){
+                window.location = "#/candidate/new/" + info.pk;
+            }
         })
         .then(null, function(data){
             $scope.notifications.count = 0;
