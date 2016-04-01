@@ -189,7 +189,7 @@ EOT;
                     (select employees_pk from applicants_talent_acquisition where applicants_pk = pk order by date_created desc limit 1) as talent_acquisition,
                     date_interaction,
                     time_completed,
-                    over_due,
+                    (case when (date_received - date_created) > '2 hours'::interval then true else false end) as over_due,
                     first_name,
                     last_name,
                     middle_name,
