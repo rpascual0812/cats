@@ -131,7 +131,7 @@ app.controller('Notifications', function(
         var info = $scope.notifications.data[k];
 
         var data = {
-            pk : info.pk,
+            pk : info.table_pk,
             read : 't'
         };
 
@@ -145,7 +145,7 @@ app.controller('Notifications', function(
                 window.location = "#/candidate/" + info.applicant_id;
             }
             else if(info.type == "requisitions"){
-                window.location = "#/candidate/new/" + info.pk;
+                window.location = "#/candidate/new/" + info.table_pk;
             }
         })
         .then(null, function(data){
