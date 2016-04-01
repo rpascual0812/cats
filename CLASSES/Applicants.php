@@ -201,7 +201,7 @@ EOT;
                     endorcement_date,
                     (select client from clients where pk = applicants.clients_pk) as client,
                     cv,
-                    (select statuses.status from applicants_status left join statuses on (applicants_status.status = statuses.pk) where applicants_pk = applicants.pk order by date_created desc limit 1) as status
+                    (select status from statuses where pk = statuses_pk) as status
                 from applicants
                 left join employees_permission on (applicants.created_by = employees_permission.employees_pk)
                 where $where
