@@ -154,7 +154,6 @@ create table applicants
 	created_by int not null,
 	date_created timestamptz default now(),
 	date_received timestamptz not null,
-	talent_acquisition int not null,
 	date_interaction timestamptz,
 	time_completed timestamptz,
 	-- over_due boolean default false,
@@ -244,6 +243,7 @@ alter table applicants_logs owner to cats;
 
 create table notifications
 (
+	pk serial primary key,
 	employees_pk int not null,
 	notification text not null,
 	type text not null,

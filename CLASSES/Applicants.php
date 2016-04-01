@@ -75,18 +75,18 @@ class Applicants extends ClassParent {
                 '$this->clients_pk',
                 '$this->cv'
             );
-            insert into applicants_status
-            (
-                applicants_pk,
-                status,
-                created_by
-            )
-            values
-            (
-                currval('applicants_pk_seq'),
-                (select pk from statuses where status = 'For Processing'),
-                '$this->created_by'
-            );
+            --insert into applicants_status
+            --(
+            --    applicants_pk,
+            --    status,
+            --    created_by
+            --)
+            --values
+            --(
+            --   currval('applicants_pk_seq'),
+            --    (select pk from statuses where status = 'For Processing'),
+            --    '$this->created_by'
+            --);
             insert into applicants_talent_acquisition
             (
                 applicants_pk,
