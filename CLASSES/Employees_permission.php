@@ -28,7 +28,8 @@ class Employees_permission extends ClassParent {
                     roles_pk,
                     supervisor,
                     (select role from roles where pk = roles_pk) as role,
-                    permission
+                    permission,
+                    (select supervisor_pk from talent_acquisition_group where employees_pk = employees_permission.employees_pk) as talent_acquisition
                 from employees_permission
                 where employees_pk = $this->employees_pk
                 ;

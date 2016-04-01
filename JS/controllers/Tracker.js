@@ -70,12 +70,7 @@ app.controller('Tracker', function(
             var _id = md5.createHash('pk');
             $scope.pk = data.data[_id];
 
-            get_requisitions();
-            get_profile();
-            getsources();
-            getjobpositions();
-            getclients();
-            getTA();
+            get_profile();            
         })
         .then(null, function(data){
             window.location = './login.html';
@@ -117,6 +112,30 @@ app.controller('Tracker', function(
         var promise = EmployeesFactory.profile(filters);
         promise.then(function(data){
             $scope.profile = data.data.result[0];
+
+            get_employees_permission();
+        })   
+    }
+
+    function get_employees_permission(){
+        var filters = { 
+            'employees_pk' : $scope.profile.pk
+        };
+
+        var promise = EmployeesFactory.individual_permission(filters);
+        promise.then(function(data){
+            var a = data.data.result[0];
+
+            $scope.profile.title = a.title;
+            $scope.profile.role = a.role;
+            $scope.profile.department = a.department;
+            $scope.profile.talent_acquisition = a.talent_acquisition;
+
+            get_requisitions();
+            getsources();
+            getjobpositions();
+            getclients();
+            getTA();
         })   
     }
 
@@ -183,20 +202,28 @@ app.controller('Tracker', function(
     }
 
     function getTA(){
-        var filters = {
-                        'title' : 'Talent Acquisition',
-                        'archived':'false'
-                    };
+        // var filters = {
+        //                 'role' : 'Talent Acquisition',
+        //                 'archived':'false'
+        //             };
 
-        var promise = EmployeesFactory.fetch(filters);
+        var promise = EmployeesFactory.talent_acquisitions();
         promise.then(function(data){
-            var a = data.data.result;
+            var a = data.data;
+
+
+
             $scope.data.talent_acquisitions = [];
             for(var i in a){
+                var isticked = false;
+                if($scope.profile.talent_acquisition == a[i].employees_pk){
+                    isticked = true;    
+                }
+
                 $scope.data.talent_acquisitions.push({   
-                                            pk: a[i].pk,
-                                            name: a[i].first_name + ' ' + a[i].middle_name + ' ' + a[i].last_name,
-                                            ticked: false
+                                            pk: a[i].employees_pk,
+                                            name: a[i].employee,
+                                            ticked: isticked
                                         });
             }
         })
