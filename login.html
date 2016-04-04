@@ -157,6 +157,7 @@
                         data: { empid : empid, password : pass },
                         statusCode: {
                             404: function(response){
+                                console.log(response);
                                 $('#div-message').empty().show().append("Incorrect Employee ID and/or Password");
                                 
                                 setTimeout(function(){
@@ -165,6 +166,7 @@
                             }
                         },
                         success: function(data){
+
                             window.location = window.location.href.replace('login.html','');
                             // if(data.permission.Menu.Tracker){
                             //     window.location = window.location.href.replace('login.html','#/tracker/pending');
