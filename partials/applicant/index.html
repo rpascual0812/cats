@@ -121,7 +121,7 @@
                                 <tr class="edit-form">
                                     <td class="col-md-3">Status</td>
                                     <td class="col-md-5" ng-show="permissions.Candidates.Functions.Status">
-                                        <span ng-if="restriction.status.edit">
+                                        <span>
                                             <div
                                                 isteven-multi-select
                                                 input-model="data.statuses"
@@ -136,9 +136,6 @@
                                             </div>
                                             <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="update_status('status')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
                                             <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('status')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
-                                        </span>
-                                        <span ng-if="restriction.status.text">
-                                            {{form.status}}
                                         </span>
                                     </td>
                                     <td ng-show="!permissions.Candidates.Functions.Status">

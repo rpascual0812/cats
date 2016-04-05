@@ -157,7 +157,7 @@ app.controller('Applicant', function(
 
         var assoc = ['Associate', 'Intern'];
         var sup = ['Specialist', 'Supervisor'];
-        var manager = ['Asst Manager', 'Manager'];
+        var manager = ['Assistant Manager', 'Manager'];
         var exec = ['C-Level'];
 
         if(contains(assoc, $scope.profile.level)){
