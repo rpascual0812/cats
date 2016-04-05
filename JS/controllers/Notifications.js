@@ -131,7 +131,7 @@ app.controller('Notifications', function(
         var info = $scope.notifications.data[k];
 
         var data = {
-            pk : info.table_pk,
+            pk : info.pk,
             read : 't'
         };
 
