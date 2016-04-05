@@ -43,7 +43,7 @@ app.controller('RequisitionEdit', function(
     }
 
     $scope.label = {
-        profile : "Profile",
+        job_position : "Job Position",
         needed : "Number of applicants needed",
         end_date : "Target End Date"
     };
@@ -241,7 +241,7 @@ app.controller('RequisitionEdit', function(
                 }
                 else {
                     var txt;
-                    if(col == "profile"){
+                    if(col == "job_position"){
                         for(var i in $scope.data.jobpositions){
                             if($scope.data.jobpositions[i].pk == $scope.request['profile_pk']){
                                 txt = $scope.data.jobpositions[i].name;
@@ -287,6 +287,9 @@ app.controller('RequisitionEdit', function(
             data['remarks'] = $scope.modal.data.remarks;
             data['requisition_id'] = $routeParams.id;
             data['employees_pk'] = $scope.profile.pk;
+            data['job_positions_pk'] = $scope.form.job_position[0].pk;
+
+            delete data['job_position'];
             
             var promise = RequestFactory.update(data);
             promise.then(function(data){
