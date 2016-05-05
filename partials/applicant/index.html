@@ -162,7 +162,16 @@
                                         <span class="fa fa-mail-reply save-button" style="margin-left:10px;" ng-click="cancel_edit('date_appointment')" data-toggle="tooltip" data-placement="right" title="Revert changes"></span>
                                     </td>
                                 </tr>
-                                
+                                <tr class="edit-form">
+                                    <td class="col-md-3">Remind me...</td>
+                                    <td class="col-md-5" colspan="2">
+
+                                        <input id="formedits_remind_me" type="text" maxlength="50" class="form-text" data-ng-model="form.remind_me" ng-change="clearerror('remind_me')" style="width:100px;" />
+
+                                        <span class="fa fa-save save-button" style="margin-left:10px;" ng-click="save_edit_field('remind_me')" data-toggle="tooltip" data-placement="right" title="Save changes"></span>
+                                        
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -397,6 +406,25 @@
             <div class="col-md-4 div-remarks">
                 <div class="panel">
                     <div class="panel-body">
+                        <h3 style="margin-top:-5px;"> <img src="./ASSETS/img/alarm.png" /> Reminders:</h3>
+                        <table class="table table-striped table-bordered" style="width:100%;">
+                            <tr ng-repeat="(k,v) in remarks">
+                                <td>
+                                    <div>
+                                        {{v.details}}
+                                    </div>
+                                    <div style="color:#2196f3; font-size:10px; margin-top:5px;">
+                                        {{v.name}} {{v.date_created}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="remarks_status">
+                                <td><a ng-click="more_remarks()">more...</a></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="panel-body">
                         <h3 style="margin-top:-5px;">Logs:</h3>
                         <table class="table table-striped table-bordered" style="width:100%;">
                             <tr ng-repeat="(k,v) in remarks">
@@ -431,6 +459,8 @@
 
         $('#formedits_date_endorsed').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
         $('#formedits_appointment_date').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
+
+        $('#formedits_remind_me').bootstrapMaterialDatePicker({ format : 'YYYY-MM-DD HH:mm', animation:true });
 
         $('.dtp-close').hide();
 

@@ -293,6 +293,15 @@ create table sources_logs
 );
 alter table sources_logs owner to cats;
 
+create table reminders
+(
+	pk serial primary key,
+	message text not null,
+	remind_on timestamptz,
+	date_created timestamptz default now(),
+	created_by int references employees_permission (employees_pk)
+);
+alter table reminders owner to cats;
 
 
 create trigger insertlogs before update on applicants for each row execute procedure insertlogs();
