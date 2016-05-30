@@ -56,8 +56,7 @@ class Applicants extends ClassParent {
                 contact_number,
                 email_address,
                 clients_pk,
-                cv,
-                statuses_pk
+                cv
             )
             values
             (
@@ -74,21 +73,20 @@ class Applicants extends ClassParent {
                 '$this->contact_number',
                 '$this->email_address',
                 '$this->clients_pk',
-                '$this->cv',
-                (select pk from statuses where status = 'For Processing')
+                '$this->cv'
             );
-            --insert into applicants_status
-            --(
-            --    applicants_pk,
-            --    status,
-            --    created_by
-            --)
-            --values
-            --(
-            --   currval('applicants_pk_seq'),
-            --    (select pk from statuses where status = 'For Processing'),
-            --    '$this->created_by'
-            --);
+            insert into applicants_status
+            (
+                applicants_pk,
+                statuses_pk,
+                created_by
+            )
+            values
+            (
+               currval('applicants_pk_seq'),
+                (select pk from statuses where status = 'For Processing'),
+                '$this->created_by'
+            );
             insert into applicants_talent_acquisition
             (
                 applicants_pk,
@@ -156,14 +154,14 @@ EOT;
         
         $where="true";
         if($data['datetype'] == "Date Submitted"){
-            $where .= " and date_created between '".$data['datefrom']." 0000' and '".$data['dateto']." 2359'";
+            $where .= " and applicants_status.date_created between '".$data['datefrom']." 0000' and '".$data['dateto']." 2359'";
         }
         else {
-            $where .= " and date_received between '".$data['datefrom']." 0000' and '".$data['dateto']." 2359'";
+            $where .= " and applicants_status.date_received between '".$data['datefrom']." 0000' and '".$data['dateto']." 2359'";
         }
 
         if(isset($data['new_status'])){
-            $where .= " and applicants.statuses_pk = ". $data['new_status'];
+            $where .= " and applicants_status.statuses_pk = ". $data['new_status'];
         }
 
         $arr = array('Administrator', 'Director', 'Manager');
@@ -179,19 +177,20 @@ EOT;
             $where .= " and created_by = ". $data['employees_pk'];
         }
 
-        $sql = <<<EOT
+        echo "<pre>";
+        echo $sql = <<<EOT
                 select
-                    pk,
-                    applicant_id,
+                    applicants.pk,
+                    applicants.applicant_id,
                     (select source from sources where pk = applicants.sources_pk::int) as source,
-                    created_by,
-                    date_created::timestamp(0) as date_created,
-                    date_received::date as date_received,
-                    date_received::time as time_received,
-                    (select employees_pk from applicants_talent_acquisition where applicants_pk = pk order by date_created desc limit 1) as talent_acquisition,
+                    applicants.created_by,
+                    applicants.date_created::timestamp(0) as date_created,
+                    applicants.date_received::date as date_received,
+                    applicants.date_received::time as time_received,
+                    (select employees_pk from applicants_talent_acquisition where applicants_pk = pk order by applicants_talent_acquisition.date_created desc limit 1) as talent_acquisition,
                     date_interaction,
                     time_completed,
-                    (case when (date_received - date_created) > '2 hours'::interval then true else false end) as over_due,
+                    (case when (applicants.date_received - applicants.date_created) > '2 hours'::interval then true else false end) as over_due,
                     first_name,
                     last_name,
                     middle_name,
@@ -203,8 +202,16 @@ EOT;
                     endorcement_date,
                     (select client from clients where pk = applicants.clients_pk) as client,
                     cv,
-                    (select status from statuses where pk = statuses_pk) as status
-                from applicants
+                    (
+                        select 
+                            status 
+                        from statuses
+                        left join applicants_status on (statuses.pk = applicants_status.statuses_pk) 
+                        where applicants_status.applicants_pk = applicants.pk
+                        order by applicants_status.date_created desc limit 1
+                    ) as status
+                from applicants_status
+                left join applicants on (applicants_status.applicants_pk = applicants.pk)
                 left join employees_permission on (applicants.created_by = employees_permission.employees_pk)
                 where $where
                 order by pk asc
@@ -307,7 +314,14 @@ EOT;
                     (select client from clients where pk = applicants.clients_pk) as client,
                     cv,
                     statuses_pk,
-                    (select status from statuses where pk = applicants.statuses_pk) as status
+                    (
+                        select 
+                            status 
+                        from statuses
+                        left join applicants_status on (statuses.pk = applicants_status.statuses_pk) 
+                        where applicants_status.applicants_pk = applicants.pk
+                        order by applicants_status.date_created desc limit 1
+                    ) as status
                 from applicants
                 where applicant_id = '$this->applicant_id'
                 ;
@@ -355,7 +369,7 @@ EOT;
         return ClassParent::update($sql);
     }
 
-    public function update($data){        
+    public function update($data){  
         $remarks = pg_escape_string(trim(strip_tags($data['remarks'])));
         $employees_pk = pg_escape_string(trim(strip_tags($data['employees_pk'])));
         $applicant_id = pg_escape_string(trim(strip_tags($data['applicant_id'])));
@@ -364,6 +378,12 @@ EOT;
         $details = $applicant['result'][0];
 
         $applicants_pk = $details['pk'];
+
+        $statuses_pk = null;
+        if(isset($data['statuses_pk'])){
+            $statuses_pk = $data['statuses_pk'];
+            unset($data['statuses_pk']);
+        }
 
         $date_endorsed = null;
         if(isset($data['date_endorsed'])){
@@ -419,6 +439,38 @@ EOT;
                     ($vals)
                     where applicant_id = '$applicant_id'
                     ;
+EOT;
+        }
+
+        if(isset($statuses_pk)){
+            $sql .= <<<EOT
+                insert into applicants_status
+                (
+                    applicants_pk,
+                    statuses_pk,
+                    created_by
+                )
+                values
+                (
+                    $applicants_pk,
+                    $statuses_pk,
+                    $employees_pk
+                );
+
+                insert into applicants_logs
+                (
+                    applicants_pk,
+                    type,
+                    details,
+                    created_by
+                )
+                values
+                (
+                    $applicants_pk,
+                    'Logs',
+                    'Set STATUS to ' || (select status from statuses where pk = $statuses_pk),
+                    0
+                );
 EOT;
         }
 

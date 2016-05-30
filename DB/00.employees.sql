@@ -14,8 +14,8 @@ create table employees
 	position int not null,
 	level text not null,
 	department int[] not null,
-	archived boolean default false,
-	date_created timestamptz default now()
+	date_created timestamptz default now(),
+	archived boolean default false	
 );
 alter table employees owner to chrs;
 create unique index employee_id_unique_idx on employees (employee_id);

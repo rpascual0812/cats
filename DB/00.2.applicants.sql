@@ -168,8 +168,7 @@ create table applicants
 	endorcement_date timestamptz,
 	clients_pk int references clients(pk),
 	cv text not null,
-	appointment_date timestamptz,
-	statuses_pk int references statuses(pk)
+	appointment_date timestamptz
 );
 alter table applicants owner to cats;
 create unique index applicant_id_idx on applicants (applicant_id);
@@ -240,6 +239,15 @@ create table applicants_logs
 	date_created timestamptz default now()
 );
 alter table applicants_logs owner to cats;
+
+create table applicants_status
+(
+	applicants_pk int references applicants(pk),
+	statuses_pk int not null,	
+	created_by int not null,
+	date_created timestamptz default now()
+);
+alter table applicants_status owner to cats;
 
 create table notifications
 (

@@ -42,7 +42,7 @@ foreach($data['result'] as $k=>$v){
 
 $filename = "PIF_".date('Ymd_His').".csv";
 
-header ("Content-type: application/octet-stream");
-header ("Content-Disposition: attachment; filename=".$filename);
+// header ("Content-type: application/octet-stream");
+// header ("Content-Disposition: attachment; filename=".$filename);
 echo $header."\n".$body;
 ?>
